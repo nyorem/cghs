@@ -1,0 +1,25 @@
+name:                cghs
+version:             0.1.0
+synopsis:            Geometric algorithms in Haskell
+description:         A computational geometry library written in Haskell. Contains useful 2D or 3D algorithms like convex hulls, triangulations... and geometric types (points, vectors, polygons, segments...)
+homepage:            https://github.com/nyorem/cghs
+bug-reports:         https://github.com/nyorem/cghs/issues
+license:             MIT
+license-file:        LICENSE
+author:              Jocelyn MEYRON
+maintainer:          Jocelyn.Meyron@ensimag.grenoble-inp.fr
+category:            Math
+build-type:          Simple
+cabal-version:       >=1.10
+
+source-repository   head
+    type:           git
+    location:       git://github.com/nyorem/cghs
+
+library
+  exposed-modules:     Math.CGUtils,
+                       Math.Types.PointVector2
+  build-depends:       base >=4.6 && <4.8
+  default-language:    Haskell2010
+  ghc-options:         -Wall
+
