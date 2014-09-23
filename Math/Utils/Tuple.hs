@@ -1,4 +1,5 @@
-module Math.CGUtils where
+module Math.Utils.Tuple
+where
 
 -- | Applies a function to a couple.
 (><) :: (a -> b) -> (a, a) -> (b, b)

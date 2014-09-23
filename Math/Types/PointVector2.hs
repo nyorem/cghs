@@ -1,7 +1,7 @@
 module Math.Types.PointVector2
 where
 
-import Math.CGUtils
+import Math.Utils.Tuple
 
 newtype Vector2 a = Vector2 { getVector2 :: (a, a) } deriving (Eq, Show)
 newtype Point2 a = Point2 { getPoint2 :: (a, a) } deriving (Eq, Show)
