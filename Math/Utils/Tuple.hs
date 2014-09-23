@@ -1,3 +1,4 @@
+-- | Utility functions on tuples.
 module Math.Utils.Tuple
 where
 

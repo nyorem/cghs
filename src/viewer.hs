@@ -33,18 +33,7 @@ mouseButtonCallback ref window button state _ =
     when (button == W.MouseButton'1 && state == W.MouseButtonState'Pressed) $ do
         (xMouse, yMouse) <- W.getCursorPos window
         let p = RenderablePoint2 $ Point2 $ convertToGLFrame width height (xMouse, yMouse)
-        modifyIORef ref (p :)
-
-bool :: Bool -> a -> a -> a
-bool b falseRes trueRes = if b then trueRes else falseRes
-
-maybe' :: Maybe a -> b -> (a -> b) -> b
-maybe' m nothingRes f = maybe nothingRes f m
-
-unless' :: Monad m => m Bool -> m () -> m ()
-unless' action falseAction = do
-    b <- action
-    unless b falseAction
+        modifyIORef ref ((p, white) :)
 
 main :: IO ()
 main = do
@@ -65,6 +54,8 @@ main = do
             renderRef <- newIORef renderList
             W.setMouseButtonCallback window (Just $ mouseButtonCallback renderRef)
 
+            clearColor $= Color4 0 0 0 0
+            pointSize $= 3.0
             mainLoop renderRef window
 
             W.destroyWindow window
@@ -81,4 +72,15 @@ mainLoop ref window = unless' (W.windowShouldClose window) $ do
         W.swapBuffers window
 
         mainLoop ref window
+
+bool :: Bool -> a -> a -> a
+bool b falseRes trueRes = if b then trueRes else falseRes
+
+maybe' :: Maybe a -> b -> (a -> b) -> b
+maybe' m nothingRes f = maybe nothingRes f m
+
+unless' :: Monad m => m Bool -> m () -> m ()
+unless' action falseAction = do
+    b <- action
+    unless b falseAction
 
