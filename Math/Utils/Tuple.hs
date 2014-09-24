@@ -6,3 +6,7 @@ where
 (><) :: (a -> b) -> (a, a) -> (b, b)
 f >< (x, y) = (f x, f y)
 
+-- | First component of a triple.
+fst3 :: (a, b, c) -> a
+fst3 (a, _, _) = a
+

@@ -2,6 +2,8 @@
 module Math.Types.PointVector2
 where
 
+import Data.Monoid
+
 import Math.Utils.Tuple
 
 -- | 2D point data type.
@@ -13,6 +15,10 @@ newtype Vector2 a = Vector2 { getVector2 :: (a, a) } deriving (Eq, Show)
 -- | Applies a function to a point.
 instance Functor Point2 where
     fmap f p = Point2 $ f >< (getPoint2 p)
+
+-- | The origin point.
+origin :: (Num a) => Point2 a
+origin = Point2 (0, 0)
 
 -- | ith coordinate of a point.
 ith :: Int -> Point2 a -> a
@@ -32,6 +38,15 @@ y = ith 2
 instance Functor Vector2 where
     fmap f p = Vector2 $ f >< (getVector2 p)
 
+-- | Vectors define a monoid.
+instance (Num a) => Monoid (Vector2 a) where
+    mempty = originv
+    mappend = (<+>)
+
+-- | The origin vector.
+originv :: (Num a) => Vector2 a
+originv = Vector2 (0, 0)
+
 -- | ith coordinate of a vector.
 ithv :: Int -> Vector2 a -> a
 ithv 1 = fst . getVector2
@@ -48,7 +63,7 @@ yv = ithv 2
 
 -- | Squared norm of a vector.
 squaredNorm :: (Num a) => Vector2 a -> a
-squaredNorm v = xv v * xv v + yv v * yv v
+squaredNorm u = u <.> u
 
 -- | Opposite of a vector.
 negateV :: (Num a) => Vector2 a -> Vector2 a
@@ -69,4 +84,16 @@ u <+> v = Vector2 (xv u + xv v, yv u + yv v)
 -- | Subtraction of two vectors gives a vector.
 (<->) :: (Num a) => Vector2 a -> Vector2 a -> Vector2 a
 u <-> v = negateV (u <+> v)
+
+-- | Dot product of two vectors.
+(<.>) :: (Num a) => Vector2 a -> Vector2 a -> a
+u <.> v = xv u * xv v + yv u * yv v
+
+-- | Determinant of two vectors.
+(<^>) :: (Num a) => Vector2 a -> Vector2 a -> a
+u <^> v = xv u * yv v - yv u * xv v
+
+-- | Collinearity test.
+collinear :: (Eq a, Num a) => Vector2 a -> Vector2 a -> Bool
+u `collinear` v = u <^> v == 0
 

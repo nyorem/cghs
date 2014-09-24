@@ -5,6 +5,7 @@ where
 import Graphics.Rendering.OpenGL
 
 import Math.Types.PointVector2
+import Math.Types.Polygon2
 import Math.Types.Segment2
 import Math.Types.Triangle2
 
@@ -12,23 +13,27 @@ import Math.Types.Triangle2
 data RenderableItem a = RenderablePoint2 (Point2 a)
                       | RenderableSegment2 (Segment2 a)
                       | RenderableTriangle2 (Triangle2 a)
+                      | RenderablePolygon2 (Polygon2 a)
                       deriving Show
 
--- | A list of (renderable item, color).
-type RenderableListItem = [(RenderableItem GLfloat, Color3 GLfloat)]
+-- | A list of (renderable item, color, isSelected).
+type RenderableListItem = [(RenderableItem GLfloat, Color3 GLfloat, Bool)]
 
 -- | Render an item.
 renderItem :: RenderableItem GLfloat -> IO ()
 
+-- Point
 renderItem (RenderablePoint2 p) = renderPrimitive Points $ do
     vertex $ (Vertex3 (x p) (y p)  0 :: Vertex3 GLfloat)
 
+-- Segment
 renderItem (RenderableSegment2 s) = renderPrimitive Lines $ do
     vertex $ (Vertex3 (x p) (y p)  0 :: Vertex3 GLfloat)
     vertex $ (Vertex3 (x q) (y q)  0 :: Vertex3 GLfloat)
         where p = src s
               q = dst s
 
+-- Triangle
 renderItem (RenderableTriangle2 t) = renderPrimitive Triangles $ do
     vertex $ (Vertex3 (x p) (y p)  0 :: Vertex3 GLfloat)
     vertex $ (Vertex3 (x q) (y q)  0 :: Vertex3 GLfloat)
@@ -37,14 +42,27 @@ renderItem (RenderableTriangle2 t) = renderPrimitive Triangles $ do
               q = p2 t
               r = p3 t
 
+-- Polygon
+renderItem (RenderablePolygon2 p) = renderPrimitive Polygon $ do
+    mapM_ (\q -> vertex $ (Vertex3 (x q) (y q)  0 :: Vertex3 GLfloat)) p
+
 -- | Render a list of items.
 renderItemList :: RenderableListItem -> IO ()
-renderItemList = mapM_ (\(r, c) -> do
-        color c
+renderItemList = mapM_ (\(r, c, isSelected) -> do
+        color $ if isSelected then red else c
         renderItem r
     )
 
--- Common colors
+-- | Determines if a renderable is a point?
+isPoint :: RenderableItem a -> Bool
+isPoint (RenderablePoint2 _) = True
+isPoint _ = False
+
+-- | Returns all of the selected items?
+selectedItems :: RenderableListItem -> RenderableListItem
+selectedItems = filter (\(_, _, b) -> b)
+
+-- Common colors.
 -- | Black.
 black :: Color3 GLfloat
 black = Color3 0 0 0

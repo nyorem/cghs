@@ -20,10 +20,13 @@ source-repository   head
 
 library
   exposed-modules:     Math.Utils.Tuple,
-                       Math.Types.PointVector2,
+                       Math.Types.Circle2,
                        Math.Types.Orientation,
+                       Math.Types.PointVector2,
+                       Math.Types.Polygon2,
                        Math.Types.Segment2,
                        Math.Types.Triangle2,
+                       Math.Algorithms.ConvexHull2,
                        Graphics.RenderableItem
   build-depends:       base >=4.6 && <4.8,
                        OpenGL >= 2.9.2.0
