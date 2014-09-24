@@ -1,26 +1,24 @@
 module Main where
 
-import Control.Monad ( unless, when )
-import Graphics.Rendering.OpenGL
-import qualified Graphics.UI.GLFW as W
-import System.Exit
-import System.IO
-
+import Control.Monad ( when )
 import Data.IORef
-import Math.Utils.Tuple
+import System.Exit ( exitFailure, exitSuccess )
+import System.IO ( hPutStrLn, stderr )
+
+import qualified Graphics.UI.GLFW as W
+import Graphics.Rendering.OpenGL
+
+import Graphics.RenderableItem
+import Graphics.OGLUtils
+import Math.Algorithms.ConvexHull2
 import Math.Types.Circle2
 import Math.Types.PointVector2
-import Graphics.RenderableItem
-import Math.Algorithms.ConvexHull2
+import Math.Utils.Tuple
+import Math.Utils.Monad
 
 width, height :: Int
 width = 800
 height = 600
-
-convertToGLFrame :: Int -> Int -> (Double, Double) -> (GLfloat, GLfloat)
-convertToGLFrame w h (xMouse, yMouse) = (realToFrac x', realToFrac y')
-    where x' =  2 * (xMouse / fromIntegral w) - 1
-          y' = -2 * (yMouse / fromIntegral h) + 1
 
 errorCallBack :: W.ErrorCallback
 errorCallBack _ desc = hPutStrLn stderr desc
@@ -45,24 +43,18 @@ mouseButtonCallback :: IORef RenderableListItem -> W.MouseButtonCallback
 mouseButtonCallback ref window button state _ = do
     -- left click adds a point
     when (button == W.MouseButton'1 && state == W.MouseButtonState'Pressed) $ do
-        (xMouse, yMouse) <- W.getCursorPos window
-        let p = RenderablePoint2 $ Point2 $ convertToGLFrame width height (xMouse, yMouse)
+        (xMouse, yMouse) <- getCursorPosConverted window width height
+        let p = RenderablePoint2 $ Point2 (xMouse, yMouse)
         modifyIORef ref ((p, white, False) :)
 
     -- right clicks selects points
     when (button == W.MouseButton'2 && state == W.MouseButtonState'Pressed) $ do
-        (xMouse, yMouse) <- W.getCursorPos window
+        (xMouse, yMouse) <- getCursorPosConverted window width height
         list <- readIORef ref
-        let filteredList = map (selectPoint $ Point2 $ convertToGLFrame width height (xMouse, yMouse)) list
+        let filteredList = map (selectPoint $ Point2 (xMouse, yMouse)) list
         writeIORef ref filteredList
         where selectPoint p r@((RenderablePoint2 o), c, b) = if isInCircle (p, 0.1) o then (RenderablePoint2 o, c, not b) else r
               selectPoint _ r = r
-
-initGL :: IO ()
-initGL = do
-    clearColor $= Color4 0 0 0 0
-    pointSize $= 3.0
-    polygonMode $= (Line, Line)
 
 main :: IO ()
 main = do
@@ -82,7 +74,7 @@ main = do
             W.setKeyCallback window (Just $ keyCallback renderRef)
             W.setMouseButtonCallback window (Just $ mouseButtonCallback renderRef)
 
-            initGL
+            initGLParams
             mainLoop renderRef window
 
             W.destroyWindow window
@@ -102,12 +94,4 @@ mainLoop ref window = unless' (W.windowShouldClose window) $ do
 
 bool :: Bool -> a -> a -> a
 bool b falseRes trueRes = if b then trueRes else falseRes
-
-maybe' :: Maybe a -> b -> (a -> b) -> b
-maybe' m nothingRes f = maybe nothingRes f m
-
-unless' :: Monad m => m Bool -> m () -> m ()
-unless' action falseAction = do
-    b <- action
-    unless b falseAction
 

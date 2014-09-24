@@ -20,6 +20,7 @@ source-repository   head
 
 library
   exposed-modules:     Math.Utils.Tuple,
+                       Math.Utils.Monad,
                        Math.Types.Circle2,
                        Math.Types.Orientation,
                        Math.Types.PointVector2,
@@ -27,8 +28,10 @@ library
                        Math.Types.Segment2,
                        Math.Types.Triangle2,
                        Math.Algorithms.ConvexHull2,
+                       Graphics.OGLUtils,
                        Graphics.RenderableItem
   build-depends:       base >=4.6 && <4.8,
+                       GLFW-b >= 1.4.6,
                        OpenGL >= 2.9.2.0
   default-language:    Haskell2010
   ghc-options:         -Wall

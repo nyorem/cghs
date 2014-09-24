@@ -1,5 +1,4 @@
 # cghs
----
 
 An haskell way to do 2D computational geometry.
 
@@ -9,6 +8,8 @@ The library provides the following geometric types:
 * vectors
 * segments
 * triangles
+* polygons
+* circles
 
 The following algorithms:
 
@@ -19,9 +20,11 @@ It also contains a viewer written using `GLFW-b` and `OpenGL` bindings.It alllow
 The following functionalities are supported by the viewer:
 
 * left-click for adding points
+* right-click for selecting points
+* 'r' to restore the initial state
+* 'c' to apply the convex hull algorithm on the selected points
 
 
 # TODO:
 
-* haddock doc
-* add color in `RenderableItem`
+* convex hull 2
