@@ -23,6 +23,7 @@ height = 600
 errorCallBack :: W.ErrorCallback
 errorCallBack _ desc = hPutStrLn stderr desc
 
+-- Warning: the keyboard layout is QWERTY
 keyCallback :: IORef RenderableListItem -> W.KeyCallback
 keyCallback ref window key _ action _ = do
     -- 'esc' closes the window
@@ -38,6 +39,10 @@ keyCallback ref window key _ action _ = do
         list <- readIORef ref
         let chull = convexHull2 . map (\(RenderablePoint2 p) -> p) . filter isPoint . fst3 . unzip3 $ selectedItems list
         modifyIORef ref $ ((RenderablePolygon2 chull, blue, False) :)
+
+    -- 'a' selects all the points
+    when (key == W.Key'Q && action == W.KeyState'Pressed) $ do
+        modifyIORef ref $ toggleSelected isPoint
 
 mouseButtonCallback :: IORef RenderableListItem -> W.MouseButtonCallback
 mouseButtonCallback ref window button state _ = do

@@ -47,6 +47,19 @@ orientation2 p q r
 argP :: (RealFloat a) => Point2 a -> Point2 a -> a
 argP p0 p = arg $ p0 .-. p
 
+-- | Rotation of a point around the origin.
+rotO :: (Floating a) => a -> Point2 a -> Point2 a
+rotO theta p = Point2 (xrot, yrot)
+    where xrot = (x p) * (cos theta) + (y p) * (sin theta)
+          yrot = (x p) * (sin theta) + (y p) * (cos theta)
+
+-- | Rotation of a point.
+rot :: (Floating a) => a -> Point2 a -> Point2 a -> Point2 a
+rot theta o p =
+    let minusO = negateV . toVector $ o
+        rotated = rotO theta $ p .+> minusO
+    in rotated .+> toVector o
+
 -- | Applies a function to a vector.
 instance Functor Vector2 where
     fmap f p = Vector2 $ f >< (getVector2 p)
@@ -105,6 +118,10 @@ u <.> v = xv u * xv v + yv u * yv v
 -- | Determinant of two vectors.
 (<^>) :: (Num a) => Vector2 a -> Vector2 a -> a
 u <^> v = xv u * yv v - yv u * xv v
+
+-- | Converts a point to a vector.
+toVector :: (Num a) => Point2 a -> Vector2 a
+toVector p = origin .-. p
 
 -- | Collinearity test.
 collinear :: (Eq a, Num a) => Vector2 a -> Vector2 a -> Bool

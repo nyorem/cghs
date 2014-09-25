@@ -23,3 +23,4 @@ The following functionalities are supported by the viewer:
 * right-click for selecting points
 * 'r' to restore the initial state
 * 'c' to apply the convex hull algorithm on the selected points
+* 'a' to toggle the selected component of the points
