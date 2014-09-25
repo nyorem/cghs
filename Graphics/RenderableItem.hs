@@ -58,7 +58,7 @@ isPoint :: RenderableItem a -> Bool
 isPoint (RenderablePoint2 _) = True
 isPoint _ = False
 
--- | Returns all of the selected items?
+-- | Returns all of the selected items.
 selectedItems :: RenderableListItem -> RenderableListItem
 selectedItems = filter (\(_, _, b) -> b)
 

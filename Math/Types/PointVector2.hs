@@ -4,6 +4,7 @@ where
 
 import Data.Monoid
 
+import Math.Types.Orientation
 import Math.Utils.Tuple
 
 -- | 2D point data type.
@@ -33,6 +34,18 @@ x = ith 1
 -- | Y-coordinate of a point.
 y :: Point2 a -> a
 y = ith 2
+
+-- | Determines the orientation of three points.
+orientation2 :: (Num a, Ord a) => Point2 a -> Point2 a -> Point2 a -> Orientation
+orientation2 p q r
+    | det == 0 = Collinear
+    | det > 0 = LeftTurn
+    | otherwise = RightTurn
+        where det = (x q - x p) * (y r - y p) - (y q - y p) * (x r - x p)
+
+-- | Angle between the vector defined by two points and the x-axis.
+argP :: (RealFloat a) => Point2 a -> Point2 a -> a
+argP p0 p = arg $ p0 .-. p
 
 -- | Applies a function to a vector.
 instance Functor Vector2 where
@@ -75,7 +88,7 @@ p .+> v = Point2 (x p + xv v, y p + yv v)
 
 -- | Subtraction of two points gives a vector.
 (.-.) :: (Num a) => Point2 a -> Point2 a -> Vector2 a
-p .-. q = Vector2 (x p - x q, y p - y q)
+p .-. q = Vector2 (x q - x p, y q - y p)
 
 -- | Addition of two vectors gives a vector.
 (<+>) :: (Num a) => Vector2 a -> Vector2 a -> Vector2 a
@@ -96,4 +109,8 @@ u <^> v = xv u * yv v - yv u * xv v
 -- | Collinearity test.
 collinear :: (Eq a, Num a) => Vector2 a -> Vector2 a -> Bool
 u `collinear` v = u <^> v == 0
+
+-- | Angle between the vector and the x-axis.
+arg :: (RealFloat a) => Vector2 a -> a
+arg v = atan2 (yv v) (xv v)
 
