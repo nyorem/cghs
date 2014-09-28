@@ -62,6 +62,10 @@ isPoint _ = False
 selectedItems :: RenderableListItem -> RenderableListItem
 selectedItems = filter (\(_, _, b) -> b)
 
+-- | Returns all of the non selected items.
+nonSelectedItems :: RenderableListItem -> RenderableListItem
+nonSelectedItems = filter (\(_, _, b) -> not b)
+
 -- | Toggles the selected component of the items which satisfies the predicate.
 toggleSelected :: (RenderableItem GLfloat -> Bool) -> RenderableListItem -> RenderableListItem
 toggleSelected p = map (\i@(r, c, b) -> if p r then (r, c, not b) else i)

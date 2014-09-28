@@ -44,6 +44,10 @@ keyCallback ref window key _ action _ = do
     when (key == W.Key'Q && action == W.KeyState'Pressed) $ do
         modifyIORef ref $ toggleSelected isPoint
 
+    -- 'd' deletes the selected points
+    when (key == W.Key'D && action == W.KeyState'Pressed) $ do
+        modifyIORef ref $ nonSelectedItems
+
 mouseButtonCallback :: IORef RenderableListItem -> W.MouseButtonCallback
 mouseButtonCallback ref window button state _ = do
     -- left click adds a point

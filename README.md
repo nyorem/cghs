@@ -24,3 +24,16 @@ The following functionalities are supported by the viewer:
 * 'r' to restore the initial state
 * 'c' to apply the convex hull algorithm on the selected points
 * 'a' to toggle the selected component of the points
+
+# TODO
+
+* bisection / circumcenter
+* tests
+* generalize selection for selecting anything: intersection line / circle
+* triangulation
+* refactor events handling: state with lens?
+
+# Useful links
+
+* [circle / line intersection](http://mathworld.wolfram.com/Circle-LineIntersection.html)
+* [conversion screen / opengl coordinates](http://stackoverflow.com/questions/4520377/converting-window-coordinates-to-axis-coordinates-in-opengl)
