@@ -27,7 +27,6 @@ The following functionalities are supported by the viewer:
 
 # TODO
 
-* bisection / circumcenter
 * tests
 * generalize selection for selecting anything: intersection line / circle
 * triangulation

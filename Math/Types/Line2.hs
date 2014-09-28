@@ -17,13 +17,18 @@ computeEq (o, dir) = (a, b, c)
           b = - (xv dir)
           c = -a * (x o) - b * (y o)
 
+-- | Computes the line which is perpendicular to the current one.
+perpendicularLine :: (Num a) => Line2 a -> Line2 a
+perpendicularLine (o, dir) = (o, perpendicularDir)
+    where perpendicularDir = Vector2 $ (- (yv dir), xv dir)
+
 -- | Predicate that determines if a point lies on a line.
 onTheLine :: (Eq a, Num a) => Point2 a -> Line2 a -> Bool
 onTheLine p l = (a * (x p) + b * (y p) + c) == 0
     where (a, b, c) = computeEq l
 
 -- | Maybe returns the intersection point of two lines.
-intersectLines :: (Eq a, Fractional a, Num a) => Line2 a -> Line2 a -> Maybe (Point2 a)
+intersectLines :: (Eq a, Fractional a) => Line2 a -> Line2 a -> Maybe (Point2 a)
 intersectLines l1 l2
     | det == 0 = Nothing -- parallel lines
     | otherwise = Just $ Point2 (c2 * b1 - c1 * b2 / det, a2 * c1 - a1 * c2 / det)
