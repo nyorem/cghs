@@ -9,6 +9,12 @@ import Math.Types.PointVector2
 data Segment2 a = Segment2 {src :: Point2 a,
                             dst :: Point2 a} deriving (Show, Eq)
 
+-- | Length of a segment.
+lengthSegment :: (Floating a) => Segment2 a -> a
+lengthSegment s = sqrt . squaredNorm $ p .-. q
+    where p = src s
+          q = dst s
+
 -- | Predicate that determines if a point is inside a segment.
 insideSegment :: (Ord a, Num a) => Point2 a -> Segment2 a -> Bool
 insideSegment p s = (onTheLine p (segmentToLine s)) &&

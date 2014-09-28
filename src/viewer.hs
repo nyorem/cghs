@@ -11,6 +11,7 @@ import Graphics.Rendering.OpenGL
 import Graphics.RenderableItem
 import Graphics.OGLUtils
 import Math.Algorithms.ConvexHull2
+import Math.Algorithms.Triangulation2
 import Math.Types.Circle2
 import Math.Types.PointVector2
 import Math.Utils.Tuple
@@ -59,9 +60,7 @@ mouseButtonCallback ref window button state _ = do
     -- right clicks selects points
     when (button == W.MouseButton'2 && state == W.MouseButtonState'Pressed) $ do
         (xMouse, yMouse) <- getCursorPosConverted window width height
-        list <- readIORef ref
-        let filteredList = map (selectPoint $ Point2 (xMouse, yMouse)) list
-        writeIORef ref filteredList
+        modifyIORef ref $ map (selectPoint $ Point2 (xMouse, yMouse))
         where selectPoint p r@((RenderablePoint2 o), c, b) = if isInCircle (p, 0.1) o then (RenderablePoint2 o, c, not b) else r
               selectPoint _ r = r
 

@@ -29,6 +29,7 @@ library
                          Math.Types.Segment2,
                          Math.Types.Triangle2,
                          Math.Algorithms.ConvexHull2,
+                         Math.Algorithms.Triangulation2,
                          Graphics.OGLUtils,
                          Graphics.RenderableItem
     build-depends:       base >=4.6 && <4.8,

@@ -27,9 +27,10 @@ The following functionalities are supported by the viewer:
 
 # TODO
 
+* point inside triangle
+* triangulation: polygon (ear) + point set (via convex hull)
 * tests
 * generalize selection for selecting anything: intersection line / circle
-* triangulation
 * refactor events handling: state with lens?
 
 # Useful links
