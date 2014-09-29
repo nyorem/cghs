@@ -1,23 +1,13 @@
 -- | Functions related to renderable items (used in the viewer).
-module Graphics.RenderableItem
+module Cghs.Graphics.RenderableItem
 where
 
 import Graphics.Rendering.OpenGL
 
-import Math.Types.PointVector2
-import Math.Types.Polygon2
-import Math.Types.Segment2
-import Math.Types.Triangle2
-
--- | A renderable item.
-data RenderableItem a = RenderablePoint2 (Point2 a)
-                      | RenderableSegment2 (Segment2 a)
-                      | RenderableTriangle2 (Triangle2 a)
-                      | RenderablePolygon2 (Polygon2 a)
-                      deriving Show
-
--- | A list of (renderable item, color, isSelected).
-type RenderableListItem = [(RenderableItem GLfloat, Color3 GLfloat, Bool)]
+import Cghs.Graphics.Types
+import Cghs.Types.PointVector2
+import Cghs.Types.Segment2
+import Cghs.Types.Triangle2
 
 -- | Render an item.
 renderItem :: RenderableItem GLfloat -> IO ()

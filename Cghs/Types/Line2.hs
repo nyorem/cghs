@@ -1,8 +1,8 @@
 -- | Lines in two dimensions.
-module Math.Types.Line2
+module Cghs.Types.Line2
 where
 
-import Math.Types.PointVector2
+import Cghs.Types.PointVector2
 
 -- | A line is represented by a point and a vector.
 type Line2 a = (Point2 a, Vector2 a)

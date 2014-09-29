@@ -1,11 +1,11 @@
 -- | Points and vectors in two dimensions.
-module Math.Types.PointVector2
+module Cghs.Types.PointVector2
 where
 
 import Data.Monoid
 
-import Math.Types.Orientation
-import Math.Utils.Tuple
+import Cghs.Types.Orientation
+import Cghs.Utils
 
 -- | 2D point data type.
 newtype Point2 a = Point2 { getPoint2 :: (a, a) } deriving (Eq, Show)

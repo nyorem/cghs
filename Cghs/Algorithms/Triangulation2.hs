@@ -1,10 +1,10 @@
 -- | Triangulations in two dimensions.
-module Math.Algorithms.Triangulation2
+module Cghs.Algorithms.Triangulation2
 where
 
-import Math.Types.PointVector2
-import Math.Types.Polygon2
-import Math.Types.Triangle2
+import Cghs.Types.PointVector2
+import Cghs.Types.Polygon2
+import Cghs.Types.Triangle2
 
 -- | Triangulation of a polygon.
 triangulatePolygon2 :: (Num a) => Polygon2 a -> [Triangle2 a]

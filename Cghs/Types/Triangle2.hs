@@ -1,9 +1,9 @@
 -- | Triangles in two dimensions.
-module Math.Types.Triangle2
+module Cghs.Types.Triangle2
 where
 
-import Math.Types.Line2
-import Math.Types.PointVector2
+import Cghs.Types.Line2
+import Cghs.Types.PointVector2
 
 -- | The 2D triangle data type.
 --

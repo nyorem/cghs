@@ -19,19 +19,19 @@ source-repository   head
     location:       git://github.com/nyorem/cghs
 
 library
-    exposed-modules:     Math.Utils.Tuple,
-                         Math.Utils.Monad,
-                         Math.Types.Circle2,
-                         Math.Types.Orientation,
-                         Math.Types.PointVector2,
-                         Math.Types.Line2,
-                         Math.Types.Polygon2,
-                         Math.Types.Segment2,
-                         Math.Types.Triangle2,
-                         Math.Algorithms.ConvexHull2,
-                         Math.Algorithms.Triangulation2,
-                         Graphics.OGLUtils,
-                         Graphics.RenderableItem
+    exposed-modules:     Cghs.Utils,
+                         Cghs.Types.Circle2,
+                         Cghs.Types.Orientation,
+                         Cghs.Types.PointVector2,
+                         Cghs.Types.Line2,
+                         Cghs.Types.Polygon2,
+                         Cghs.Types.Segment2,
+                         Cghs.Types.Triangle2,
+                         Cghs.Algorithms.ConvexHull2,
+                         Cghs.Algorithms.Triangulation2,
+                         Cghs.Graphics.OGLUtils,
+                         Cghs.Graphics.Types,
+                         Cghs.Graphics.RenderableItem
     build-depends:       base >=4.6 && <4.8,
                          GLFW-b >= 1.4.6,
                          OpenGL >= 2.9.2.0

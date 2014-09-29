@@ -1,9 +1,9 @@
 -- | Segments in two dimensions.
-module Math.Types.Segment2
+module Cghs.Types.Segment2
 where
 
-import Math.Types.Line2
-import Math.Types.PointVector2
+import Cghs.Types.Line2
+import Cghs.Types.PointVector2
 
 -- | The 2D segment data type.
 data Segment2 a = Segment2 {src :: Point2 a,
@@ -35,5 +35,4 @@ segmentToLine s = (src s, dst s .-. src s)
 bisector :: (Fractional a) => Segment2 a -> Line2 a
 bisector s = (middle s, dir)
     where (_, dir) = perpendicularLine $ segmentToLine s
-
 

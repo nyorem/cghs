@@ -31,6 +31,8 @@ The following functionalities are supported by the viewer:
 * triangulation: polygon (ear) + point set (via convex hull)
 * tests
 * generalize selection for selecting anything: intersection line / circle
+* change selection to select objects for fixed type (can be changed with a key)
+
 * refactor events handling: state with lens?
 
 # Useful links

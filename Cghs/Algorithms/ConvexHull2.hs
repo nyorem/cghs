@@ -1,13 +1,13 @@
 -- | The convex hull computation algorithm using Graham scan.
-module Math.Algorithms.ConvexHull2 ( convexHull2 )
+module Cghs.Algorithms.ConvexHull2 ( convexHull2 )
 where
 
 import Data.List ( sortBy )
 import Data.Ord ( comparing )
 import Data.Monoid
 
-import Math.Types.Orientation
-import Math.Types.PointVector2
+import Cghs.Types.Orientation
+import Cghs.Types.PointVector2
 
 -- | Convex hull in two dimensions using the Graham scan.
 convexHull2 :: (Ord a, RealFloat a) => [Point2 a] -> [Point2 a]

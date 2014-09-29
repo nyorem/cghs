@@ -1,5 +1,5 @@
 -- | Functions and types related to the orientation (2 vectors or 3 points).
-module Math.Types.Orientation
+module Cghs.Types.Orientation
 where
 
 -- | Orientation type.

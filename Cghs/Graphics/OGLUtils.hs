@@ -1,5 +1,5 @@
 -- | OpenGL utilities.
-module Graphics.OGLUtils
+module Cghs.Graphics.OGLUtils
 where
 
 import qualified Graphics.UI.GLFW as W

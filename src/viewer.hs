@@ -8,14 +8,14 @@ import System.IO ( hPutStrLn, stderr )
 import qualified Graphics.UI.GLFW as W
 import Graphics.Rendering.OpenGL
 
-import Graphics.RenderableItem
-import Graphics.OGLUtils
-import Math.Algorithms.ConvexHull2
-import Math.Algorithms.Triangulation2
-import Math.Types.Circle2
-import Math.Types.PointVector2
-import Math.Utils.Tuple
-import Math.Utils.Monad
+import Cghs.Graphics.RenderableItem
+import Cghs.Graphics.OGLUtils
+import Cghs.Graphics.Types
+import Cghs.Algorithms.ConvexHull2
+import Cghs.Algorithms.Triangulation2
+import Cghs.Types.Circle2
+import Cghs.Types.PointVector2
+import Cghs.Utils
 
 width, height :: Int
 width = 800
@@ -38,8 +38,16 @@ keyCallback ref window key _ action _ = do
     -- 'c' computes the convex hull of all the points in the list
     when (key == W.Key'C && action == W.KeyState'Pressed) $ do
         list <- readIORef ref
-        let chull = convexHull2 . map (\(RenderablePoint2 p) -> p) . filter isPoint . fst3 . unzip3 $ selectedItems list
+        let points = map (\(RenderablePoint2 p) -> p) . filter isPoint . fst3 . unzip3 $ selectedItems list
+            chull = convexHull2 points
         modifyIORef ref $ ((RenderablePolygon2 chull, blue, False) :)
+
+    -- 't' computes the triangulation of all the points in the list
+    when (key == W.Key'T && action == W.KeyState'Pressed) $ do
+        list <- readIORef ref
+        let points = map (\(RenderablePoint2 p) -> p) . filter isPoint . fst3 . unzip3 $ selectedItems list
+            tri = triangulatePointSet2 points
+        modifyIORef ref $ (++  map (\t -> (RenderableTriangle2 t, green, False)) tri)
 
     -- 'a' selects all the points
     when (key == W.Key'Q && action == W.KeyState'Pressed) $ do
