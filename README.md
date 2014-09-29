@@ -7,6 +7,7 @@ The library provides the following geometric types:
 * points
 * vectors
 * segments
+* lines
 * triangles
 * polygons
 * circles
@@ -24,10 +25,12 @@ The following functionalities are supported by the viewer:
 * 'r' to restore the initial state
 * 'c' to apply the convex hull algorithm on the selected points
 * 'a' to toggle the selected component of the points
+* 's' to create a segment between two points
+* 'l' to create a line between two points (not working for now)
 
 # TODO
 
-* point inside triangle
+* point inside triangle / convex polygon
 * triangulation: polygon (ear) + point set (via convex hull)
 * tests
 * generalize selection for selecting anything: intersection line / circle

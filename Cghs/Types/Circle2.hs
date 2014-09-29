@@ -10,8 +10,8 @@ import Cghs.Types.PointVector2
 type Circle2 a = (Floating r) => (Point2 a, r)
 
 -- | Is a point inside a circle?
-isInCircle :: (Floating a, Ord a) => Circle2 a -> Point2 a -> Bool
-isInCircle (o, r) p = squaredNorm op <= square r
+isInCircle2 :: (Floating a, Ord a) => Circle2 a -> Point2 a -> Bool
+isInCircle2 (o, r) p = squaredNorm op <= square r
     where square n = n * n
           op = o .-. p
 

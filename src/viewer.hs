@@ -7,13 +7,15 @@ import System.IO ( hPutStrLn, stderr )
 
 import qualified Graphics.UI.GLFW as W
 import Graphics.Rendering.OpenGL
-
 import Cghs.Graphics.RenderableItem
 import Cghs.Graphics.OGLUtils
 import Cghs.Graphics.Types
+
 import Cghs.Algorithms.ConvexHull2
 import Cghs.Algorithms.Triangulation2
+
 import Cghs.Types.Circle2
+import Cghs.Types.Segment2
 import Cghs.Types.PointVector2
 import Cghs.Utils
 
@@ -49,6 +51,22 @@ keyCallback ref window key _ action _ = do
             tri = triangulatePointSet2 points
         modifyIORef ref $ (++  map (\t -> (RenderableTriangle2 t, green, False)) tri)
 
+    -- 'l' creates a line between two points
+    when (key == W.Key'L && action == W.KeyState'Pressed) $ do
+        list <- readIORef ref
+        when (length list == 2) $ do
+            let [p, q] = map (\(RenderablePoint2 p) -> p) . filter isPoint . fst3 . unzip3 $ selectedItems list
+                l = (RenderableLine2 $ (p, (p .-. q)), blue, False)
+            modifyIORef ref $ (l :)
+
+    -- 's' creates a segment between two points
+    when (key == W.Key'S && action == W.KeyState'Pressed) $ do
+        list <- readIORef ref
+        when (length list == 2) $ do
+            let [p, q] = map (\(RenderablePoint2 p) -> p) . filter isPoint . fst3 . unzip3 $ selectedItems list
+                s = (RenderableSegment2 $ Segment2 p q, blue, False)
+            modifyIORef ref $ (s :)
+
     -- 'a' selects all the points
     when (key == W.Key'Q && action == W.KeyState'Pressed) $ do
         modifyIORef ref $ toggleSelected isPoint
@@ -69,7 +87,7 @@ mouseButtonCallback ref window button state _ = do
     when (button == W.MouseButton'2 && state == W.MouseButtonState'Pressed) $ do
         (xMouse, yMouse) <- getCursorPosConverted window width height
         modifyIORef ref $ map (selectPoint $ Point2 (xMouse, yMouse))
-        where selectPoint p r@((RenderablePoint2 o), c, b) = if isInCircle (p, 0.1) o then (RenderablePoint2 o, c, not b) else r
+        where selectPoint p r@((RenderablePoint2 o), c, b) = if isInCircle2 (p, 0.1) o then (RenderablePoint2 o, c, not b) else r
               selectPoint _ r = r
 
 main :: IO ()

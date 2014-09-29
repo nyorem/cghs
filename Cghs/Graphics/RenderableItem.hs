@@ -12,9 +12,17 @@ import Cghs.Types.Triangle2
 -- | Render an item.
 renderItem :: RenderableItem GLfloat -> IO ()
 
+-- Line
+renderItem (RenderableLine2 l) = renderItem (RenderableSegment2 s)
+    where s = lineToSegment2 l
+
 -- Point
 renderItem (RenderablePoint2 p) = renderPrimitive Points $ do
     vertex $ (Vertex3 (x p) (y p)  0 :: Vertex3 GLfloat)
+
+-- Polygon
+renderItem (RenderablePolygon2 p) = renderPrimitive Polygon $ do
+    mapM_ (\q -> vertex $ (Vertex3 (x q) (y q)  0 :: Vertex3 GLfloat)) p
 
 -- Segment
 renderItem (RenderableSegment2 s) = renderPrimitive Lines $ do
@@ -31,10 +39,6 @@ renderItem (RenderableTriangle2 t) = renderPrimitive Triangles $ do
         where p = p1 t
               q = p2 t
               r = p3 t
-
--- Polygon
-renderItem (RenderablePolygon2 p) = renderPrimitive Polygon $ do
-    mapM_ (\q -> vertex $ (Vertex3 (x q) (y q)  0 :: Vertex3 GLfloat)) p
 
 -- | Render a list of items.
 renderItemList :: RenderableListItem -> IO ()
