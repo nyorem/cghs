@@ -8,6 +8,7 @@ import Cghs.Graphics.Types
 import Cghs.Types.PointVector2
 import Cghs.Types.Segment2
 import Cghs.Types.Triangle2
+import Cghs.Utils
 
 -- | Render an item.
 renderItem :: RenderableItem GLfloat -> IO ()
@@ -59,6 +60,10 @@ selectedItems = filter (\(_, _, b) -> b)
 -- | Returns all of the non selected items.
 nonSelectedItems :: RenderableListItem -> RenderableListItem
 nonSelectedItems = filter (\(_, _, b) -> not b)
+
+-- | Gets all of the points of the renderable list.
+getPoints :: RenderableListItem -> [Point2 GLfloat]
+getPoints = map (\(RenderablePoint2 p) -> p) . filter isPoint . fst3 . unzip3 . selectedItems
 
 -- | Toggles the selected component of the items which satisfies the predicate.
 toggleSelected :: (RenderableItem GLfloat -> Bool) -> RenderableListItem -> RenderableListItem

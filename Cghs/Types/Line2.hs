@@ -15,6 +15,7 @@ data LineDirection2 = HorizontalLine
                     | VerticalLine
                     | IncreasingLine
                     | DecreasingLine
+                    deriving Show
 
 -- | Computes the equation of a line.
 computeEq2 :: (Num a) => Line2 a -> LineEquation2 a
@@ -22,6 +23,10 @@ computeEq2 (o, dir) = (a, b, c)
     where a = yv dir
           b = - (xv dir)
           c = -a * (x o) - b * (y o)
+
+-- | Tests if two lines are parallel.
+isParallel2 :: (Eq a, Num a) => Line2 a -> Line2 a -> Bool
+isParallel2 (_, dir) (_, dir') = collinear dir dir'
 
 -- | Computes the line which is perpendicular to the current one.
 perpendicularLine2 :: (Num a) => Line2 a -> Line2 a
@@ -36,8 +41,8 @@ onTheLine2 p l = (a * (x p) + b * (y p) + c) == 0
 -- | Maybe returns the intersection point of two lines.
 intersectLines2 :: (Eq a, Fractional a) => Line2 a -> Line2 a -> Maybe (Point2 a)
 intersectLines2 l1 l2
-    | det == 0 = Nothing -- parallel lines
-    | otherwise = Just $ Point2 (c2 * b1 - c1 * b2 / det, a2 * c1 - a1 * c2 / det)
+    | isParallel2 l1 l2 = Nothing
+    | otherwise = Just $ Point2 ( (c2 * b1 - c1 * b2) / det, (a2 * c1 - a1 * c2) / det )
     where (a1, b1, c1) = computeEq2 l1
           (a2, b2, c2) = computeEq2 l2
           det = a1 * b2 - a2 * b1
@@ -47,10 +52,8 @@ directionLine2 :: (Eq a, Num a) => Line2 a -> LineDirection2
 directionLine2 (_, dir)
     | collinear dir (Vector2 (1, 0)) = HorizontalLine
     | collinear dir (Vector2 (0, 1)) = VerticalLine
-    | signum xdir == signum ydir = IncreasingLine
+    | signum (xv dir) == signum (yv dir) = IncreasingLine
     | otherwise = DecreasingLine
-        where xdir = xv dir
-              ydir = yv dir
 
 -- | A line parallel to the X axis.
 xaxis :: (Num a) => Point2 a -> Line2 a

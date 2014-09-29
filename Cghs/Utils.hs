@@ -22,3 +22,7 @@ f >< (x, y) = (f x, f y)
 fst3 :: (a, b, c) -> a
 fst3 (a, _, _) = a
 
+-- | 'if then else' with a function.
+bool :: Bool -> a -> a -> a
+bool b falseRes trueRes = if b then trueRes else falseRes
+

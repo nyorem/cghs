@@ -40,30 +40,28 @@ keyCallback ref window key _ action _ = do
     -- 'c' computes the convex hull of all the points in the list
     when (key == W.Key'C && action == W.KeyState'Pressed) $ do
         list <- readIORef ref
-        let points = map (\(RenderablePoint2 p) -> p) . filter isPoint . fst3 . unzip3 $ selectedItems list
-            chull = convexHull2 points
+        let chull = convexHull2 $ getPoints list
         modifyIORef ref $ ((RenderablePolygon2 chull, blue, False) :)
 
     -- 't' computes the triangulation of all the points in the list
     when (key == W.Key'T && action == W.KeyState'Pressed) $ do
         list <- readIORef ref
-        let points = map (\(RenderablePoint2 p) -> p) . filter isPoint . fst3 . unzip3 $ selectedItems list
-            tri = triangulatePointSet2 points
+        let tri = triangulatePointSet2 $ getPoints list
         modifyIORef ref $ (++  map (\t -> (RenderableTriangle2 t, green, False)) tri)
 
     -- 'l' creates a line between two points
     when (key == W.Key'L && action == W.KeyState'Pressed) $ do
         list <- readIORef ref
-        when (length list == 2) $ do
-            let [p, q] = map (\(RenderablePoint2 p) -> p) . filter isPoint . fst3 . unzip3 $ selectedItems list
+        when (length (selectedItems list) == 2) $ do
+            let [p, q] = getPoints list
                 l = (RenderableLine2 $ (p, (p .-. q)), blue, False)
             modifyIORef ref $ (l :)
 
     -- 's' creates a segment between two points
     when (key == W.Key'S && action == W.KeyState'Pressed) $ do
         list <- readIORef ref
-        when (length list == 2) $ do
-            let [p, q] = map (\(RenderablePoint2 p) -> p) . filter isPoint . fst3 . unzip3 $ selectedItems list
+        when (length (selectedItems list) == 2) $ do
+            let [p, q] = getPoints list
                 s = (RenderableSegment2 $ Segment2 p q, blue, False)
             modifyIORef ref $ (s :)
 
@@ -125,7 +123,4 @@ mainLoop ref window = unless' (W.windowShouldClose window) $ do
         W.swapBuffers window
 
         mainLoop ref window
-
-bool :: Bool -> a -> a -> a
-bool b falseRes trueRes = if b then trueRes else falseRes
 
