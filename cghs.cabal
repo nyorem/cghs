@@ -45,7 +45,8 @@ executable viewer
     build-depends:       base >=4.6 && < 4.8,
                          cghs >= 0.1.0,
                          GLFW-b >= 1.4.6,
-                         OpenGL >= 2.9.2.0
+                         OpenGL >= 2.9.2.0,
+                         lens >= 4.4
     ghc-options:         -Wall
 
 test-suite unit-tests

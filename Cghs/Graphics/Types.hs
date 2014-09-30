@@ -24,5 +24,8 @@ type RenderableListItem = [(RenderableItem GLfloat, Color3 GLfloat, Bool)]
 -- | Select mode.
 data SelectMode = PointMode
                 | SegmentMode
-                deriving Show
+
+instance Show SelectMode where
+    show PointMode = "points"
+    show SegmentMode = "segments"
 

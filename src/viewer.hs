@@ -1,3 +1,5 @@
+{-# LANGUAGE TemplateHaskell #-}
+
 module Main where
 
 import Control.Monad ( when )
@@ -19,6 +21,17 @@ import Cghs.Types.Segment2
 import Cghs.Types.PointVector2
 import Cghs.Utils
 
+import Control.Lens
+
+data ViewerState = ViewerState
+                 { _renderList :: RenderableListItem,
+                   _selectionMode :: SelectMode
+                 }
+makeLenses ''ViewerState
+
+initialViewerState :: ViewerState
+initialViewerState = ViewerState { _renderList = [], _selectionMode = PointMode }
+
 width, height :: Int
 width = 800
 height = 600
@@ -27,7 +40,7 @@ errorCallBack :: W.ErrorCallback
 errorCallBack _ desc = hPutStrLn stderr desc
 
 -- Warning: the keyboard layout is QWERTY
-keyCallback :: IORef RenderableListItem -> W.KeyCallback
+keyCallback :: IORef ViewerState -> W.KeyCallback
 keyCallback ref window key _ action _ = do
     -- 'esc' closes the window
     when (key == W.Key'Escape && action == W.KeyState'Pressed) $
@@ -35,56 +48,70 @@ keyCallback ref window key _ action _ = do
 
     -- 'r' reset the renderable list
     when (key == W.Key'R && action == W.KeyState'Pressed) $ do
-        writeIORef ref []
+        writeIORef ref initialViewerState
 
     -- 'c' computes the convex hull of all the points in the list
     when (key == W.Key'C && action == W.KeyState'Pressed) $ do
-        list <- readIORef ref
-        let chull = convexHull2 $ getPoints list
-        modifyIORef ref $ ((RenderablePolygon2 chull, blue, False) :)
+        viewerState <- readIORef ref
+        let chull = convexHull2 $ getPoints $ viewerState ^. renderList
+            newState = viewerState & renderList %~ ((RenderablePolygon2 chull, blue, False) :)
+        writeIORef ref newState
 
     -- 't' computes the triangulation of all the points in the list
     when (key == W.Key'T && action == W.KeyState'Pressed) $ do
-        list <- readIORef ref
-        let tri = triangulatePointSet2 $ getPoints list
-        modifyIORef ref $ (++  map (\t -> (RenderableTriangle2 t, green, False)) tri)
+        viewerState <- readIORef ref
+        let tri = triangulatePointSet2 $ getPoints $ viewerState ^. renderList
+            newState = viewerState & renderList %~ (++  map (\t -> (RenderableTriangle2 t, green, False)) tri)
+        writeIORef ref newState
 
     -- 'l' creates a line between two points
     when (key == W.Key'L && action == W.KeyState'Pressed) $ do
-        list <- readIORef ref
+        viewerState <- readIORef ref
+        let list = viewerState ^. renderList
         when (length (selectedItems list) == 2) $ do
             let [p, q] = getPoints list
                 l = (RenderableLine2 $ (p, (p .-. q)), blue, False)
-            modifyIORef ref $ (l :)
+                newState = viewerState & renderList %~ (l :)
+            writeIORef ref newState
 
-    -- 's' creates a segment between two points
+    -- -- 's' creates a segment between two points
     when (key == W.Key'S && action == W.KeyState'Pressed) $ do
-        list <- readIORef ref
+        viewerState <- readIORef ref
+        let list = viewerState ^. renderList
         when (length (selectedItems list) == 2) $ do
             let [p, q] = getPoints list
                 s = (RenderableSegment2 $ Segment2 p q, blue, False)
-            modifyIORef ref $ (s :)
+                newState = viewerState & renderList %~ (s :)
+            writeIORef ref newState
 
     -- 'a' selects all the points
     when (key == W.Key'Q && action == W.KeyState'Pressed) $ do
-        modifyIORef ref $ toggleSelected isPoint
+        viewerState <- readIORef ref
+        let newState = viewerState & renderList %~ toggleSelected isPoint
+        writeIORef ref newState
 
     -- 'd' deletes the selected points
     when (key == W.Key'D && action == W.KeyState'Pressed) $ do
-        modifyIORef ref $ nonSelectedItems
+        viewerState <- readIORef ref
+        let newState = viewerState & renderList %~ nonSelectedItems
+        writeIORef ref newState
 
-mouseButtonCallback :: IORef RenderableListItem -> W.MouseButtonCallback
+mouseButtonCallback :: IORef ViewerState -> W.MouseButtonCallback
 mouseButtonCallback ref window button state _ = do
     -- left click adds a point
     when (button == W.MouseButton'1 && state == W.MouseButtonState'Pressed) $ do
         (xMouse, yMouse) <- getCursorPosConverted window width height
+        viewerState <- readIORef ref
         let p = RenderablePoint2 $ Point2 (xMouse, yMouse)
-        modifyIORef ref ((p, white, False) :)
+            newState = viewerState & renderList %~ ((p, white, False) :)
+        writeIORef ref newState
 
     -- right clicks selects points
     when (button == W.MouseButton'2 && state == W.MouseButtonState'Pressed) $ do
         (xMouse, yMouse) <- getCursorPosConverted window width height
-        modifyIORef ref $ map (selectPoint $ Point2 (xMouse, yMouse))
+        viewerState <- readIORef ref
+        let newState = viewerState & renderList %~ map (selectPoint $ Point2 (xMouse, yMouse))
+        writeIORef ref newState
         where selectPoint p r@((RenderablePoint2 o), c, b) = if isInCircle2 (p, 0.1) o then (RenderablePoint2 o, c, not b) else r
               selectPoint _ r = r
 
@@ -101,26 +128,32 @@ main = do
         mw <- W.createWindow width height "cghs" Nothing Nothing
         maybe' mw (W.terminate >> exitFailure) $ \window -> do
             W.makeContextCurrent mw
-            let renderList = []
-            renderRef <- newIORef renderList
-            W.setKeyCallback window (Just $ keyCallback renderRef)
-            W.setMouseButtonCallback window (Just $ mouseButtonCallback renderRef)
+            stateRef <- newIORef initialViewerState
+            W.setKeyCallback window (Just $ keyCallback stateRef)
+            W.setMouseButtonCallback window (Just $ mouseButtonCallback stateRef)
 
             initGLParams
-            mainLoop renderRef window
+            mainLoop stateRef window
 
             W.destroyWindow window
             W.terminate
             exitSuccess
 
-mainLoop :: IORef RenderableListItem -> W.Window -> IO ()
+mainLoop :: IORef ViewerState -> W.Window -> IO ()
 mainLoop ref window = unless' (W.windowShouldClose window) $ do
         clear [ColorBuffer]
-        list <- readIORef ref
-        renderItemList list
+        viewerState <- readIORef ref
+        -- TODO
+        changeTitle viewerState window
+        renderItemList $ viewerState ^. renderList
 
         W.pollEvents
         W.swapBuffers window
 
         mainLoop ref window
+
+changeTitle :: ViewerState -> W.Window -> IO ()
+changeTitle state w = do
+    let mode = state ^. selectionMode
+    W.setWindowTitle w $ "cghs - " ++ show mode
 
