@@ -30,7 +30,7 @@ The following functionalities are supported by the viewer:
 
 # TODO
 
-* generalize selection for selecting anything: intersection line / circle
+* generalize selection for selecting anything
 * change selection to select objects for fixed type (can be changed with a key)
 
 * triangulation: polygon (ear) + point set (via convex hull)
@@ -43,4 +43,4 @@ The following functionalities are supported by the viewer:
 * [conversion screen / opengl coordinates](http://stackoverflow.com/questions/4520377/converting-window-coordinates-to-axis-coordinates-in-opengl)
 * [point inside polygon](http://stackoverflow.com/questions/217578/point-in-polygon-aka-hit-test/2922778#2922778)
 * [point inside triangle](http://codegolf.stackexchange.com/questions/32898/check-if-point-lies-inside-triangle)
-* [circle / line intersection](http://mathworld.wolfram.com/Circle-LineIntersection.html)
+* [circle / line intersection](http://stackoverflow.com/questions/1073336/circle-line-collision-detection)

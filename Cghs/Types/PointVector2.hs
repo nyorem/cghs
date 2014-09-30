@@ -101,7 +101,7 @@ p .+> v = Point2 (x p + xv v, y p + yv v)
 
 -- | Subtraction of two points gives a vector.
 (.-.) :: (Num a) => Point2 a -> Point2 a -> Vector2 a
-p .-. q = Vector2 (x q - x p, y q - y p)
+p .-. q = Vector2 (x p - x q, y p - y q)
 
 -- | Addition of two vectors gives a vector.
 (<+>) :: (Num a) => Vector2 a -> Vector2 a -> Vector2 a
@@ -111,6 +111,14 @@ u <+> v = Vector2 (xv u + xv v, yv u + yv v)
 (<->) :: (Num a) => Vector2 a -> Vector2 a -> Vector2 a
 u <-> v = negateV (u <+> v)
 
+-- | Left scalar multiplication of a vector.
+(*.>) :: (Num a) => a -> Vector2 a -> Vector2 a
+lambda *.> u = Vector2 (lambda * xv u, lambda * yv u)
+
+-- | Right scalar multiplication of a vector.
+(<.*) :: (Num a) => Vector2 a -> a -> Vector2 a
+(<.*) = flip (*.>)
+
 -- | Dot product of two vectors.
 (<.>) :: (Num a) => Vector2 a -> Vector2 a -> a
 u <.> v = xv u * xv v + yv u * yv v
@@ -118,6 +126,10 @@ u <.> v = xv u * xv v + yv u * yv v
 -- | Determinant of two vectors.
 (<^>) :: (Num a) => Vector2 a -> Vector2 a -> a
 u <^> v = xv u * yv v - yv u * xv v
+
+-- | Normalizes an unit vector.
+normalize :: (Floating a) => Vector2 a -> Vector2 a
+normalize v = (1 / (sqrt $ squaredNorm v)) *.> v
 
 -- | Converts a point to a vector.
 toVector :: (Num a) => Point2 a -> Vector2 a
