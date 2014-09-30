@@ -29,7 +29,7 @@ library
                          Cghs.Types.Triangle2,
                          Cghs.Algorithms.ConvexHull2,
                          Cghs.Algorithms.Triangulation2,
-                         Cghs.Graphics.OGLUtils,
+                         Cghs.Graphics.Utils,
                          Cghs.Graphics.Types,
                          Cghs.Graphics.RenderableItem
     build-depends:       base >=4.6 && <4.8,

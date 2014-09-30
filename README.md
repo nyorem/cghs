@@ -26,19 +26,21 @@ The following functionalities are supported by the viewer:
 * 'c' to apply the convex hull algorithm on the selected points
 * 'a' to toggle the selected component of the points
 * 's' to create a segment between two points
-* 'l' to create a line between two points (not working for now)
+* 'l' to create a line between two points
 
 # TODO
 
-* point inside triangle / convex polygon
-* triangulation: polygon (ear) + point set (via convex hull)
-* tests
 * generalize selection for selecting anything: intersection line / circle
 * change selection to select objects for fixed type (can be changed with a key)
+
+* triangulation: polygon (ear) + point set (via convex hull)
+* tests
 
 * refactor events handling: state with lens?
 
 # Useful links
 
-* [circle / line intersection](http://mathworld.wolfram.com/Circle-LineIntersection.html)
 * [conversion screen / opengl coordinates](http://stackoverflow.com/questions/4520377/converting-window-coordinates-to-axis-coordinates-in-opengl)
+* [point inside polygon](http://stackoverflow.com/questions/217578/point-in-polygon-aka-hit-test/2922778#2922778)
+* [point inside triangle](http://codegolf.stackexchange.com/questions/32898/check-if-point-lies-inside-triangle)
+* [circle / line intersection](http://mathworld.wolfram.com/Circle-LineIntersection.html)

@@ -8,7 +8,7 @@ import System.IO ( hPutStrLn, stderr )
 import qualified Graphics.UI.GLFW as W
 import Graphics.Rendering.OpenGL
 import Cghs.Graphics.RenderableItem
-import Cghs.Graphics.OGLUtils
+import Cghs.Graphics.Utils
 import Cghs.Graphics.Types
 
 import Cghs.Algorithms.ConvexHull2
