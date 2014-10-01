@@ -9,6 +9,7 @@ import System.IO ( hPutStrLn, stderr )
 
 import qualified Graphics.UI.GLFW as W
 import Graphics.Rendering.OpenGL
+
 import Cghs.Graphics.RenderableItem
 import Cghs.Graphics.Utils
 import Cghs.Graphics.Types
@@ -16,7 +17,6 @@ import Cghs.Graphics.Types
 import Cghs.Algorithms.ConvexHull2
 import Cghs.Algorithms.Triangulation2
 
-import Cghs.Types.Circle2
 import Cghs.Types.Segment2
 import Cghs.Types.PointVector2
 import Cghs.Utils
@@ -29,6 +29,7 @@ data ViewerState = ViewerState
                  }
 makeLenses ''ViewerState
 
+-- | Initial state for the viewer.
 initialViewerState :: ViewerState
 initialViewerState = ViewerState { _renderList = [], _selectionMode = PointMode }
 
@@ -74,7 +75,7 @@ keyCallback ref window key _ action _ = do
                 newState = viewerState & renderList %~ (l :)
             writeIORef ref newState
 
-    -- -- 's' creates a segment between two points
+    -- 's' creates a segment between two points
     when (key == W.Key'S && action == W.KeyState'Pressed) $ do
         viewerState <- readIORef ref
         let list = viewerState ^. renderList
@@ -84,16 +85,24 @@ keyCallback ref window key _ action _ = do
                 newState = viewerState & renderList %~ (s :)
             writeIORef ref newState
 
-    -- 'a' selects all the points
+    -- 'a' selects all the items according to the current selection mode
     when (key == W.Key'Q && action == W.KeyState'Pressed) $ do
         viewerState <- readIORef ref
-        let newState = viewerState & renderList %~ toggleSelected isPoint
+        let mode = viewerState ^. selectionMode
+        let newState = viewerState & renderList %~ toggleSelected (isRenderable mode)
         writeIORef ref newState
 
-    -- 'd' deletes the selected points
+    -- 'd' deletes the selected items
     when (key == W.Key'D && action == W.KeyState'Pressed) $ do
         viewerState <- readIORef ref
         let newState = viewerState & renderList %~ nonSelectedItems
+        writeIORef ref newState
+
+    -- 'm' changes the selection mode
+    when (key == W.Key'Semicolon && action == W.KeyState'Pressed) $ do
+        viewerState <- readIORef ref
+        let newState' = viewerState & selectionMode %~ succ'
+            newState = newState' & renderList %~ deselectItems (const True)
         writeIORef ref newState
 
 mouseButtonCallback :: IORef ViewerState -> W.MouseButtonCallback
@@ -106,14 +115,14 @@ mouseButtonCallback ref window button state _ = do
             newState = viewerState & renderList %~ ((p, white, False) :)
         writeIORef ref newState
 
-    -- right clicks selects points
+    -- right clicks selects items according to the current selection mode
     when (button == W.MouseButton'2 && state == W.MouseButtonState'Pressed) $ do
         (xMouse, yMouse) <- getCursorPosConverted window width height
         viewerState <- readIORef ref
-        let newState = viewerState & renderList %~ map (selectPoint $ Point2 (xMouse, yMouse))
+        let mode = viewerState ^. selectionMode
+            newState = viewerState & renderList %~ map (selectItem mode $ Point2 (xMouse, yMouse))
         writeIORef ref newState
-        where selectPoint p r@((RenderablePoint2 o), c, b) = if isInCircle2 (p, 0.1) o then (RenderablePoint2 o, c, not b) else r
-              selectPoint _ r = r
+        where selectItem m p r@(o, _, _) = if isRenderable m o && isInCircleRenderable m o (p, 0.1) then toggleSelectedItem r else r
 
 main :: IO ()
 main = do
@@ -143,7 +152,6 @@ mainLoop :: IORef ViewerState -> W.Window -> IO ()
 mainLoop ref window = unless' (W.windowShouldClose window) $ do
         clear [ColorBuffer]
         viewerState <- readIORef ref
-        -- TODO
         changeTitle viewerState window
         renderItemList $ viewerState ^. renderList
 
@@ -152,6 +160,8 @@ mainLoop ref window = unless' (W.windowShouldClose window) $ do
 
         mainLoop ref window
 
+-- | Change the title of the window according to the current
+-- selection mode.
 changeTitle :: ViewerState -> W.Window -> IO ()
 changeTitle state w = do
     let mode = state ^. selectionMode

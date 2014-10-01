@@ -18,8 +18,10 @@ lengthSegment2 s = sqrt . squaredNorm $ (src s) .-. (dst s)
 -- | Predicate that determines if a point is inside a segment.
 insideSegment2 :: (Num a, Ord a) => Point2 a -> Segment2 a -> Bool
 insideSegment2 p s = (onTheLine2 p (segmentToLine2 s)) &&
-              ((x p) >= (x . src $ s) && (x p) <= (x . dst $ s)) &&
-              ((y p) >= (y . src $ s) && (y p) <= (y . dst $ s))
+              (((x p) >= (x . src $ s) && (x p) <= (x . dst $ s)) &&
+              ((y p) >= (y . src $ s) && (y p) <= (y . dst $ s))) ||
+              (((x p) >= (x . dst $ s) && (x p) <= (x . src $ s)) &&
+              ((y p) >= (y . dst $ s) && (y p) <= (y . src $ s)))
 
 -- | Middlepoint of a segment.
 middlepoint2 :: (Fractional a) => Segment2 a -> Point2 a

@@ -27,14 +27,21 @@ The following functionalities are supported by the viewer:
 * 'a' to toggle the selected component of the points
 * 's' to create a segment between two points
 * 'l' to create a line between two points
+* 'm' to change the mode of selection
 
 # TODO
 
-* change selection to select objects for fixed type (can be changed with a key)
+* create a function for patterns like:
+
+```
+state <- readIORef ref
+let newState = ...
+writeIORef ref newState
+```
+* refactor events handling: lookup list
 
 * triangulation: polygon (ear) + point set (via convex hull)
 * tests
-* refactor events handling: lookup list
 
 # Useful links
 

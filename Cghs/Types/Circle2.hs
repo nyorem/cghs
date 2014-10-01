@@ -1,5 +1,3 @@
-{-# LANGUAGE Rank2Types #-}
-
 -- | Circles in two dimensions.
 module Cghs.Types.Circle2
 where
@@ -9,13 +7,11 @@ import Cghs.Types.Segment2
 import Cghs.Utils
 
 -- | A circle is made with an origin and a radius.
-type Circle2 a = (Floating r) => (Point2 a, r)
+type Circle2 a = (Point2 a, Double)
 
 -- | Is a point inside a circle?
-isInCircle2 :: (Floating a, Ord a) => Circle2 a -> Point2 a -> Bool
-isInCircle2 (o, r) p = squaredNorm op <= square r
-    where square n = n * n
-          op = o .-. p
+isInCircle2 :: (Floating a, Ord a) => Point2 a -> Circle2 a -> Bool
+isInCircle2 p (o, r) = squaredNorm (o .-. p) <= realToFrac (r * r)
 
 -- | Intersection between a segment and a circle.
 intersectSegmentCircle2 :: (Floating a, Ord a) => Segment2 a -> Circle2 a -> Maybe [Point2 a]
@@ -28,7 +24,15 @@ intersectSegmentCircle2 s (o, r) =
           e = (src s) .-. o
           a = squaredNorm d
           b = 2 * (d <.> e)
-          c = (squaredNorm e) - r * r
+          c = (squaredNorm e) - realToFrac (r * r)
           maybeSols = solveQuadratic a b c
           constructPoint start dir t = start .+> (t *.> dir)
+
+-- | Does a segment intersects a circle in two points?
+doesSegmentIntersectCircle :: (Floating a, Ord a) => Segment2 a -> Circle2 a -> Bool
+doesSegmentIntersectCircle s c =
+    case sols of
+        Nothing -> False
+        Just xs -> length xs == 2
+        where sols = intersectSegmentCircle2 s c
 
