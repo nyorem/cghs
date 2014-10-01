@@ -38,7 +38,6 @@ state <- readIORef ref
 let newState = ...
 writeIORef ref newState
 ```
-* refactor events handling: lookup list
 
 * triangulation: polygon (ear) + point set (via convex hull)
 * tests
