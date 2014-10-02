@@ -40,11 +40,20 @@ keyEventFunctions =
       )
 
       -- 't' computes the triangulation of all the points in the list
+      -- or polygons depending on the current mode
     , (W.Key'T, \ref _ -> do
         viewerState <- readIORef ref
-        let tri = triangulatePointSet2 $ getPoints $ viewerState ^. renderList
-            newState = viewerState & renderList %~ (++  map (\t -> (RenderableTriangle2 t, green, False)) tri)
-        writeIORef ref newState
+        case viewerState ^. selectionMode of
+            PointMode -> do
+                let tri = triangulatePointSet2 $ getPoints $ viewerState ^. renderList
+                    newState = viewerState & renderList %~ (++  map (\t -> (RenderableTriangle2 t, green, False)) tri)
+                writeIORef ref newState
+            PolygonMode -> do
+                let polys = getPolygons $ viewerState ^. renderList
+                    tris = concat $ map triangulatePolygon2 polys
+                    newState = viewerState & renderList %~ (++  map (\t -> (RenderableTriangle2 t, green, False)) tris)
+                writeIORef ref newState
+            _ -> return ()
       )
 
       -- 'l' creates a line between two points
@@ -52,7 +61,7 @@ keyEventFunctions =
         viewerState <- readIORef ref
         let list = viewerState ^. renderList
         when (length (selectedItems list) == 2) $ do
-            let [p, q] = getPoints list
+            let [p, q] = getPoints $ selectedItems list
                 l = (RenderableLine2 $ (p, (p .-. q)), blue, False)
                 newState = viewerState & renderList %~ (l :)
             writeIORef ref newState
@@ -63,7 +72,7 @@ keyEventFunctions =
         viewerState <- readIORef ref
         let list = viewerState ^. renderList
         when (length (selectedItems list) == 2) $ do
-            let [p, q] = getPoints list
+            let [p, q] = getPoints $ selectedItems list
                 s = (RenderableSegment2 $ Segment2 p q, blue, False)
                 newState = viewerState & renderList %~ (s :)
             writeIORef ref newState

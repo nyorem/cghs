@@ -31,6 +31,7 @@ type RenderableListItem = [(RenderableItem GLfloat, Color3 GLfloat, Bool)]
 data SelectMode = PointMode
                 | SegmentMode
                 | LineMode
+                | PolygonMode
                 deriving (Bounded, Enum, Eq)
 
 -- | Particular instance of Show for SelectMode.
@@ -38,6 +39,7 @@ instance Show SelectMode where
     show PointMode = "points"
     show SegmentMode = "segments"
     show LineMode = "lines"
+    show PolygonMode = "polygons"
 
 -- | State of the viewer.
 data ViewerState = ViewerState

@@ -3,6 +3,7 @@ module Cghs.Utils
 where
 
 import Control.Monad ( unless )
+import Data.List ( delete )
 
 -- | Same as 'maybe' but the order of parameters is changed.
 maybe' :: Maybe a -> b -> (a -> b) -> b
@@ -31,6 +32,17 @@ succ' :: (Bounded a, Enum a, Eq a) => a -> a
 succ' s
     | s == maxBound = minBound
     | otherwise = succ s
+
+-- | Get the i'th element of a list by considering the
+-- list cyclic.
+(<!!>) :: [a] -> Int -> a
+xs <!!> i = xs !! i'
+    where i' = i `mod` (length xs)
+
+-- | Deletes multiples element in a list.
+deleteList :: (Eq a) => [a] -> [a] -> [a]
+deleteList xs [] = xs
+deleteList xs (d:ds) = deleteList (delete d xs) ds
 
 -- | Solves the quadratic equation given by: a * x^2 + b * x + c = 0.
 solveQuadratic :: (Floating a, Ord a) => a -> a -> a -> Maybe [a]

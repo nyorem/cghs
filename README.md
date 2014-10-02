@@ -32,6 +32,10 @@ The following functionalities are supported by the viewer:
 
 # TODO
 
+* `isInCircleRenderable` for polygons
+* polygon triangulation: debug
+
+* do a better thing for getRenderable stuff
 * create a function for patterns like:
 
 ```
@@ -40,7 +44,7 @@ let newState = ...
 writeIORef ref newState
 ```
 
-* triangulation: polygon (ear) + point set (via convex hull)
+* point set triangulation
 * tests
 
 # Useful links

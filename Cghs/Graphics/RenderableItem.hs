@@ -9,6 +9,7 @@ import Cghs.Graphics.Types
 import Cghs.Types.Circle2
 import Cghs.Types.Line2
 import Cghs.Types.PointVector2
+import Cghs.Types.Polygon2
 import Cghs.Types.Segment2
 import Cghs.Types.Triangle2
 import Cghs.Utils
@@ -58,6 +59,8 @@ renderItemList = mapM_ (\(r, c, isSelected) -> do
         renderItem r
     )
 
+-- TODO: do a better thing
+
 -- | Get a point from a renderable.
 getRenderablePoint :: RenderableItem a -> Point2 a
 getRenderablePoint (RenderablePoint2 p) = p
@@ -72,6 +75,11 @@ getRenderableSegment _ = undefined
 getRenderableLine :: RenderableItem a -> Line2 a
 getRenderableLine (RenderableLine2 l) = l
 getRenderableLine _ = undefined
+
+-- | Get a polygon from a renderable.
+getRenderablePolygon :: RenderableItem a -> Polygon2 a
+getRenderablePolygon (RenderablePolygon2 l) = l
+getRenderablePolygon _ = undefined
 
 -- | Determines if a renderable is a point.
 isRenderablePoint :: RenderableItem a -> Bool
@@ -103,6 +111,7 @@ isRenderable :: SelectMode -> (RenderableItem a -> Bool)
 isRenderable PointMode = isRenderablePoint
 isRenderable SegmentMode = isRenderableSegment
 isRenderable LineMode = isRenderableLine
+isRenderable PolygonMode = isRenderablePolygon
 
 -- | Gives the intersection predicate corresponding to the current
 -- selection mode.
@@ -110,6 +119,8 @@ isInCircleRenderable :: (Floating a, Ord a) => SelectMode -> (RenderableItem a -
 isInCircleRenderable PointMode = \r -> isInCircle2 (getRenderablePoint r)
 isInCircleRenderable SegmentMode = \r -> doesSegmentIntersectCircle2 (getRenderableSegment r)
 isInCircleRenderable LineMode = \r -> doesLineIntersectCircle2 (getRenderableLine r)
+-- TODO
+isInCircleRenderable PolygonMode = undefined
 
 -- | Returns all of the selected items.
 selectedItems :: RenderableListItem -> RenderableListItem
@@ -121,7 +132,11 @@ nonSelectedItems = filter (\(_, _, b) -> not b)
 
 -- | Gets all of the points in the renderable list.
 getPoints :: RenderableListItem -> [Point2 GLfloat]
-getPoints = map (\(RenderablePoint2 p) -> p) . filter isRenderablePoint . fst3 . unzip3 . selectedItems
+getPoints = map getRenderablePoint . filter isRenderablePoint . fst3 . unzip3 . selectedItems
+
+-- | Gets all of the polygons in the renderable list.
+getPolygons :: RenderableListItem -> [Polygon2 GLfloat]
+getPolygons = map getRenderablePolygon . filter isRenderablePolygon . fst3 . unzip3 . selectedItems
 
 -- | Toggles the select state of an item.
 toggleSelectedItem :: (a, b, Bool) -> (a, b, Bool)
