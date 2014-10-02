@@ -69,6 +69,14 @@ keyEventFunctions =
             writeIORef ref newState
       )
 
+      -- 'p' creates a polygon where the vertices are the selected points
+    , (W.Key'P, \ref _ -> do
+        viewerState <- readIORef ref
+        let p = RenderablePolygon2 $ getPoints $ viewerState ^. renderList
+            newState = viewerState & renderList %~ ((p, blue, False) :)
+        writeIORef ref newState
+      )
+
       -- 'a' selects all the items according to the current selection mode
     , (W.Key'Q, \ref _ -> do
         viewerState <- readIORef ref

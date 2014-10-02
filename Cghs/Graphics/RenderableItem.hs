@@ -7,6 +7,7 @@ import Graphics.Rendering.OpenGL
 import Cghs.Graphics.Types
 
 import Cghs.Types.Circle2
+import Cghs.Types.Line2
 import Cghs.Types.PointVector2
 import Cghs.Types.Segment2
 import Cghs.Types.Triangle2
@@ -67,6 +68,11 @@ getRenderableSegment :: RenderableItem a -> Segment2 a
 getRenderableSegment (RenderableSegment2 s) = s
 getRenderableSegment _ = undefined
 
+-- | Get a line from a renderable.
+getRenderableLine :: RenderableItem a -> Line2 a
+getRenderableLine (RenderableLine2 l) = l
+getRenderableLine _ = undefined
+
 -- | Determines if a renderable is a point.
 isRenderablePoint :: RenderableItem a -> Bool
 isRenderablePoint (RenderablePoint2 _) = True
@@ -96,12 +102,14 @@ isRenderablePolygon _ = False
 isRenderable :: SelectMode -> (RenderableItem a -> Bool)
 isRenderable PointMode = isRenderablePoint
 isRenderable SegmentMode = isRenderableSegment
+isRenderable LineMode = isRenderableLine
 
 -- | Gives the intersection predicate corresponding to the current
 -- selection mode.
 isInCircleRenderable :: (Floating a, Ord a) => SelectMode -> (RenderableItem a -> Circle2 a -> Bool)
 isInCircleRenderable PointMode = \r -> isInCircle2 (getRenderablePoint r)
-isInCircleRenderable SegmentMode = \r -> doesSegmentIntersectCircle (getRenderableSegment r)
+isInCircleRenderable SegmentMode = \r -> doesSegmentIntersectCircle2 (getRenderableSegment r)
+isInCircleRenderable LineMode = \r -> doesLineIntersectCircle2 (getRenderableLine r)
 
 -- | Returns all of the selected items.
 selectedItems :: RenderableListItem -> RenderableListItem

@@ -24,6 +24,7 @@ The following functionalities are supported by the viewer:
 * right-click for selecting points
 * 'r' to restore the initial state
 * 'c' to apply the convex hull algorithm on the selected points
+* 'p' to create a polygon where the vertices are the selected points
 * 'a' to toggle the selected component of the points
 * 's' to create a segment between two points
 * 'l' to create a line between two points
@@ -45,7 +46,7 @@ writeIORef ref newState
 # Useful links
 
 * [conversion screen / opengl coordinates](http://stackoverflow.com/questions/4520377/converting-window-coordinates-to-axis-coordinates-in-opengl)
-* [point inside polygon](http://stackoverflow.com/questions/217578/point-in-polygon-aka-hit-test/2922778#2922778)
 * [point inside triangle](http://codegolf.stackexchange.com/questions/32898/check-if-point-lies-inside-triangle)
+* [point inside polygon](http://stackoverflow.com/questions/217578/point-in-polygon-aka-hit-test/2922778#2922778)
 * [circle / line intersection](http://stackoverflow.com/questions/1073336/circle-line-collision-detection)
 
