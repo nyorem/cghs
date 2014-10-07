@@ -39,7 +39,7 @@ succ' s
 xs <!!> i = xs !! i'
     where i' = i `mod` (length xs)
 
--- | Deletes multiples element in a list.
+-- | Deletes multiple elements in a list.
 deleteList :: (Eq a) => [a] -> [a] -> [a]
 deleteList xs [] = xs
 deleteList xs (d:ds) = deleteList (delete d xs) ds
