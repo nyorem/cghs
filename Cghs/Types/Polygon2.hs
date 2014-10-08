@@ -11,17 +11,17 @@ import Cghs.Types.Triangle2
 import Cghs.Utils
 
 -- | We consider a polygon to be a list of points: its vertices
--- given in counter-clockwise order.
+-- are given in counter-clockwise order.
 type Polygon2 a = [Point2 a]
 
 -- | Type of a vertex in a polygon.
-data VertexType = ConvexVertex | ConcaveVertex deriving Eq
+data VertexType = ConvexVertex | ConcaveVertex deriving (Eq, Show)
 
 -- | Determines the type of a vertex in a polygon.
 typeVertexPolygon2 :: (Fractional a, Ord a) => Point2 a -> Polygon2 a -> VertexType
 typeVertexPolygon2 p poly
-    | area > 0 = ConcaveVertex
-    | otherwise = ConvexVertex
+    | area > 0 = ConvexVertex
+    | otherwise = ConcaveVertex
         where (pm1, pp1) = (previousVertexPolygon2 p poly, nextVertexPolygon2 p poly)
               tri = Triangle2 pm1 p pp1
               area = signedAreaTriangle2 tri
@@ -36,24 +36,24 @@ isConcaveVertexPolygon2 p poly = typeVertexPolygon2 p poly == ConcaveVertex
 
 -- | Computes the area of a simple polygon.
 areaPolygon2 :: (Fractional a) => Polygon2 a -> a
-areaPolygon2 poly = (foldr step 0 sides) / 2
-    where sides = polygonSides2 poly
+areaPolygon2 poly = abs $ (foldr step 0 edges) / 2
+    where edges = polygonEdges2 poly
           step (p, q) acc = acc + (x p * y q - x q * y p)
 
 -- | Computes the centroid of a simple polygon.
 centroidPolygon2 :: (Fractional a) => Polygon2 a -> Point2 a
 centroidPolygon2 poly = Point2 (cx, cy)
-    where sides = polygonSides2 poly
+    where edges = polygonEdges2 poly
           area = areaPolygon2 poly
-          cx = (foldr stepx 0 sides) / (6 * area)
-          cy = (foldr stepy 0 sides) / (6 * area)
+          cx = (foldr stepx 0 edges) / (6 * area)
+          cy = (foldr stepy 0 edges) / (6 * area)
           stepx (p, q) acc = acc + (x p + x q) * (x p * y q - x q * y p)
           stepy (p, q) acc = acc + (y p + y q) * (x p * y q - x q * y p)
 
--- | Gets the sides of a polygon.
-polygonSides2 :: Polygon2 a -> [(Point2 a, Point2 a)]
-polygonSides2 [] = []
-polygonSides2 poly@(p0:ps) = zip poly (ps ++ [p0])
+-- | Gets the edges of a polygon.
+polygonEdges2 :: Polygon2 a -> [(Point2 a, Point2 a)]
+polygonEdges2 [] = []
+polygonEdges2 poly@(p0:ps) = zip poly (ps ++ [p0])
 
 -- | Gets the next vertex in a polygon.
 nextVertexPolygon2 :: (Eq a) => Point2 a -> Polygon2 a -> Point2 a
