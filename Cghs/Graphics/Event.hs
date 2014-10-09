@@ -40,7 +40,8 @@ keyEventFunctions =
       )
 
       -- 't' computes the triangulation of all the points in the list
-      -- or polygons depending on the current mode
+      -- or the triangulation of a polygon
+      -- depending on the current mode
     , (W.Key'T, \ref _ -> do
         viewerState <- readIORef ref
         case viewerState ^. selectionMode of

@@ -119,8 +119,11 @@ isInCircleRenderable :: (Floating a, Ord a) => SelectMode -> (RenderableItem a -
 isInCircleRenderable PointMode = \r -> isInCircle2 (getRenderablePoint r)
 isInCircleRenderable SegmentMode = \r -> doesSegmentIntersectCircle2 (getRenderableSegment r)
 isInCircleRenderable LineMode = \r -> doesLineIntersectCircle2 (getRenderableLine r)
--- TODO
-isInCircleRenderable PolygonMode = undefined
+isInCircleRenderable PolygonMode = \r c ->
+    let edges = polygonEdges2 (getRenderablePolygon r)
+        edgesSegments = map (uncurry Segment2) edges
+    in
+        any (flip doesSegmentIntersectCircle2 $ c) edgesSegments
 
 -- | Returns all of the selected items.
 selectedItems :: RenderableListItem -> RenderableListItem
