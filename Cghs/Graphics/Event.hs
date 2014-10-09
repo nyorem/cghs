@@ -33,10 +33,9 @@ keyEventFunctions =
 
       -- 'c' computes the convex hull of all the points in the list
     , (W.Key'C, \ref _ -> do
-        viewerState <- readIORef ref
-        let chull = convexHull2 $ getPoints $ viewerState ^. renderList
-            newState = viewerState & renderList %~ ((RenderablePolygon2 chull, blue, False) :)
-        writeIORef ref newState
+        modifyIORef ref $ \viewerState ->
+            let chull = convexHull2 $ getPoints $ viewerState ^. renderList
+            in viewerState & renderList %~ ((RenderablePolygon2 chull, blue, False) :)
       )
 
       -- 't' computes the triangulation of all the points in the list
@@ -81,33 +80,28 @@ keyEventFunctions =
 
       -- 'p' creates a polygon where the vertices are the selected points
     , (W.Key'P, \ref _ -> do
-        viewerState <- readIORef ref
-        let p = RenderablePolygon2 $ getPoints $ viewerState ^. renderList
-            newState = viewerState & renderList %~ ((p, blue, False) :)
-        writeIORef ref newState
+        modifyIORef ref $ \viewerState ->
+            let p = RenderablePolygon2 $ getPoints $ viewerState ^. renderList
+            in viewerState & renderList %~ ((p, blue, False) :)
       )
 
       -- 'a' selects all the items according to the current selection mode
     , (W.Key'Q, \ref _ -> do
-        viewerState <- readIORef ref
-        let mode = viewerState ^. selectionMode
-            newState = viewerState & renderList %~ toggleSelected (isRenderable mode)
-        writeIORef ref newState
+        modifyIORef ref $ \viewerState ->
+            let mode = viewerState ^. selectionMode
+            in viewerState & renderList %~ toggleSelected (isRenderable mode)
       )
 
       -- 'd' deletes the selected items
     , (W.Key'D, \ref _ -> do
-        viewerState <- readIORef ref
-        let newState = viewerState & renderList %~ nonSelectedItems
-        writeIORef ref newState
+        modifyIORef ref $ \viewerState -> viewerState & renderList %~ nonSelectedItems
       )
 
       -- 'm' changes the selection mode
     , (W.Key'Semicolon, \ref _ -> do
-        viewerState <- readIORef ref
-        let newState' = viewerState & selectionMode %~ succ'
-            newState = newState' & renderList %~ deselectItems (const True)
-        writeIORef ref newState
+        modifyIORef ref $ \viewerState ->
+            let newState' = viewerState & selectionMode %~ succ'
+            in newState' & renderList %~ deselectItems (const True)
       )
     ]
 
@@ -118,20 +112,18 @@ mouseEventFunctions =
       -- left click adds a point
       (W.MouseButton'1, \ref window -> do
         (xMouse, yMouse) <- getCursorPosConverted window width height
-        viewerState <- readIORef ref
-        let p = RenderablePoint2 $ Point2 (xMouse, yMouse)
-            newState = viewerState & renderList %~ ((p, white, False) :)
-        writeIORef ref newState
+        modifyIORef ref $ \viewerState ->
+            let p = RenderablePoint2 $ Point2 (xMouse, yMouse)
+            in viewerState & renderList %~ ((p, white, False) :)
       )
 
       -- right clicks selects items according to the current selection mode
     , (W.MouseButton'2, \ref window -> do
         (xMouse, yMouse) <- getCursorPosConverted window width height
-        viewerState <- readIORef ref
-        let mode = viewerState ^. selectionMode
-            selectItem m p r@(o, _, _) = if isRenderable m o && isInCircleRenderable m o (p, 0.1) then toggleSelectedItem r else r
-            newState = viewerState & renderList %~ map (selectItem mode $ Point2 (xMouse, yMouse))
-        writeIORef ref newState
+        modifyIORef ref $ \viewerState ->
+            let mode = viewerState ^. selectionMode
+                selectItem m p r@(o, _, _) = if isRenderable m o && isInCircleRenderable m o (p, 0.1) then toggleSelectedItem r else r
+            in viewerState & renderList %~ map (selectItem mode $ Point2 (xMouse, yMouse))
       )
     ]
 

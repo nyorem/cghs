@@ -32,18 +32,8 @@ The following functionalities are supported by the viewer:
 
 # TODO
 
-* `isInCircleRenderable` for polygons
 * polygon triangulation: debug
-
 * do a better thing for getRenderable stuff
-* create a function for patterns like:
-
-```
-state <- readIORef ref
-let newState = ...
-writeIORef ref newState
-```
-
 * point set triangulation
 * tests
 
