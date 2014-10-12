@@ -76,3 +76,8 @@ isInsidePolygon2 poly point = foldr step False couples
               then not c
               else c
 
+-- | Reverses the order of a polygon.
+reverseOrderPolygon2 :: Polygon2 a -> Polygon2 a
+reverseOrderPolygon2 [] = []
+reverseOrderPolygon2 (p:ps) = p : reverse ps
+

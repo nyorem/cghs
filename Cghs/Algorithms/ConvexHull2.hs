@@ -8,13 +8,14 @@ import Data.Monoid
 
 import Cghs.Types.Orientation
 import Cghs.Types.PointVector2
+import Cghs.Types.Polygon2
 
 -- | Convex hull in two dimensions using the Graham scan.
 convexHull2 :: (Ord a, RealFloat a) => [Point2 a] -> [Point2 a]
 convexHull2 [] = []
 convexHull2 [p] = [p]
 convexHull2 [p, q] = [p, q]
-convexHull2 ps = scan [p0] sortedPs
+convexHull2 ps = reverseOrderPolygon2 $ init $ scan [p0] sortedPs
     where p0 = lowestY ps
           sortedPs = sortBy (comparing $ argP p0) ps
           scan [] _ = []

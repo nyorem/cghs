@@ -47,7 +47,7 @@ isEarPolygon2 points p =
 
 -- | Triangulation of a point set.
 triangulatePointSet2 :: (RealFloat a) => [Point2 a] -> [Triangle2 a]
-triangulatePointSet2 ps = undefined
+triangulatePointSet2 ps = tri
     where chull = convexHull2 ps
           tri = triangulatePolygon2 chull
 
