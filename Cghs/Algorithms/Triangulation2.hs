@@ -4,7 +4,8 @@ module Cghs.Algorithms.Triangulation2 ( triangulatePointSet2
                                       )
 where
 
-import Data.List ( delete )
+import Data.List ( delete, find )
+import Data.Maybe ( fromJust )
 
 import Cghs.Algorithms.ConvexHull2
 
@@ -14,9 +15,10 @@ import Cghs.Types.Triangle2
 
 import Cghs.Utils
 
--- TODO: debug
+-- TODO: createAdjacentTriangles not correct
+-- it depends on the order of the triangle
 
--- | Triangulation of a polygon.
+-- | Triangulation of a polygon using the ear method.
 triangulatePolygon2 :: (Fractional a, Ord a) => Polygon2 a -> [Triangle2 a]
 triangulatePolygon2 poly
     | length poly == 3 =
@@ -44,10 +46,21 @@ isEarPolygon2 points p =
         newPoints = deleteList points [pm1, p, pp1] in
     (isConvexVertexPolygon2 p points && all (not . isInsideTriangle2 tri) newPoints, [pm1, p, pp1])
 
-
--- | Triangulation of a point set.
+-- | Triangulation of a point set using
+-- the triangle splitting algorithm.
 triangulatePointSet2 :: (RealFloat a) => [Point2 a] -> [Triangle2 a]
-triangulatePointSet2 ps = tri
+triangulatePointSet2 ps = go triHull interiorPoints
     where chull = convexHull2 ps
-          tri = triangulatePolygon2 chull
+          triHull = triangulatePolygon2 chull
+          interiorPoints = filter (`notElem` chull) ps
+          findTriangle tri' p = fromJust $ find (\t -> isInsideTriangle2 t p) tri'
+          createAdjacentTriangles t p = [Triangle2 q1 q2 p, Triangle2 q2 q3 p, Triangle2 q1 q3 p]
+              where q1 = p1 t
+                    q2 = p2 t
+                    q3 = p3 t
+          go tri [] = tri
+          go tri (q:qs) =
+              let t = findTriangle tri q
+                  newTriangles = createAdjacentTriangles t q
+              in go (tri ++ newTriangles) qs
 
