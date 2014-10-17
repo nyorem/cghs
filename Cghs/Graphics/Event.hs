@@ -22,17 +22,17 @@ import Cghs.Utils
 -- | Map between a key and the function to execute.
 --
 -- Warning: the keyboard layout is QWERTY
-keyEventFunctions :: [(W.Key, IORef ViewerState -> W.Window -> IO ())]
+keyEventFunctions :: [(W.Key, IORef ViewerState -> W.ModifierKeys -> W.Window -> IO ())]
 keyEventFunctions =
     [
       -- 'esc' closes the window
-      (W.Key'Escape, \_ window -> W.setWindowShouldClose window True)
+      (W.Key'Escape, \_ _ window -> W.setWindowShouldClose window True)
 
       -- 'r' reset the renderable list
-    , (W.Key'R, \ref _ -> writeIORef ref initialViewerState)
+    , (W.Key'R, \ref _ _ -> writeIORef ref initialViewerState)
 
       -- 'c' computes the convex hull of all the points in the list
-    , (W.Key'C, \ref _ -> do
+    , (W.Key'C, \ref _ _ -> do
         modifyIORef ref $ \viewerState ->
             let chull = convexHull2 $ getPoints $ viewerState ^. renderList
             in viewerState & renderList %~ ((RenderablePolygon2 chull, blue, False) :)
@@ -41,7 +41,7 @@ keyEventFunctions =
       -- 't' computes the triangulation of all the points in the list
       -- or the triangulation of a polygon
       -- depending on the current mode
-    , (W.Key'T, \ref _ -> do
+    , (W.Key'T, \ref _ _ -> do
         viewerState <- readIORef ref
         case viewerState ^. selectionMode of
             PointMode -> do
@@ -57,7 +57,7 @@ keyEventFunctions =
       )
 
       -- 'l' creates a line between two points
-    , (W.Key'L, \ref _ -> do
+    , (W.Key'L, \ref _ _ -> do
         viewerState <- readIORef ref
         let list = viewerState ^. renderList
         when (length (selectedItems list) == 2) $ do
@@ -68,7 +68,7 @@ keyEventFunctions =
       )
 
       -- 's' creates a segment between two points
-    , (W.Key'S, \ref _ -> do
+    , (W.Key'S, \ref _ _ -> do
         viewerState <- readIORef ref
         let list = viewerState ^. renderList
         when (length (selectedItems list) == 2) $ do
@@ -79,28 +79,29 @@ keyEventFunctions =
       )
 
       -- 'p' creates a polygon where the vertices are the selected points
-    , (W.Key'P, \ref _ -> do
+    , (W.Key'P, \ref _ _ -> do
         modifyIORef ref $ \viewerState ->
             let p = RenderablePolygon2 $ getPoints $ viewerState ^. renderList
             in viewerState & renderList %~ ((p, blue, False) :)
       )
 
       -- 'a' selects all the items according to the current selection mode
-    , (W.Key'Q, \ref _ -> do
+    , (W.Key'Q, \ref _ _ -> do
         modifyIORef ref $ \viewerState ->
             let mode = viewerState ^. selectionMode
             in viewerState & renderList %~ toggleSelected (isRenderable mode)
       )
 
       -- 'd' deletes the selected items
-    , (W.Key'D, \ref _ -> do
+    , (W.Key'D, \ref _ _ -> do
         modifyIORef ref $ \viewerState -> viewerState & renderList %~ nonSelectedItems
       )
 
-      -- 'm' changes the selection mode
-    , (W.Key'Semicolon, \ref _ -> do
+      -- 'm' chooses the next selection mdoe
+      -- 'M' chooses the previous selection mdoe
+    , (W.Key'Semicolon, \ref mods _ -> do
         modifyIORef ref $ \viewerState ->
-            let newState' = viewerState & selectionMode %~ succ'
+            let newState' = viewerState & selectionMode %~ if W.modifierKeysShift mods then pred' else succ'
             in newState' & renderList %~ deselectItems (const True)
       )
     ]

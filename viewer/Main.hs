@@ -20,11 +20,11 @@ errorCallBack :: W.ErrorCallback
 errorCallBack _ desc = hPutStrLn stderr desc
 
 keyCallback :: IORef ViewerState -> W.KeyCallback
-keyCallback ref window key _ action _ =
+keyCallback ref window key _ action mods =
     when (action == W.KeyState'Pressed) $ do
         case lookup key keyEventFunctions of
             Nothing -> return ()
-            Just f -> f ref window
+            Just f -> f ref mods window
 
 mouseButtonCallback :: IORef ViewerState -> W.MouseButtonCallback
 mouseButtonCallback ref window button state _ = do

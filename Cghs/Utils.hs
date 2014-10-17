@@ -33,6 +33,12 @@ succ' s
     | s == maxBound = minBound
     | otherwise = succ s
 
+-- | Gets the predecessor in a cyclic way.
+pred' :: (Bounded a, Enum a, Eq a) => a -> a
+pred' s
+    | s == minBound = maxBound
+    | otherwise = pred s
+
 -- | Get the i'th element of a list by considering the
 -- list cyclic.
 (<!!>) :: [a] -> Int -> a
