@@ -8,6 +8,7 @@ import Graphics.Rendering.OpenGL
 
 import Cghs.Types.Circle2
 import Cghs.Types.Line2
+import Cghs.Types.PlaneRegion2
 import Cghs.Types.PointVector2
 import Cghs.Types.Polygon2
 import Cghs.Types.Segment2
@@ -16,12 +17,13 @@ import Cghs.Types.Triangle2
 import Control.Lens
 
 -- | A renderable item.
-data RenderableItem a = RenderablePoint2 (Point2 a)
+data RenderableItem a = RenderableCircle2 (Circle2 a)
                       | RenderableLine2 (Line2 a)
+                      | RenderablePlaneRegion2 (PlaneRegion2 a)
+                      | RenderablePoint2 (Point2 a)
+                      | RenderablePolygon2 (Polygon2 a)
                       | RenderableSegment2 (Segment2 a)
                       | RenderableTriangle2 (Triangle2 a)
-                      | RenderablePolygon2 (Polygon2 a)
-                      | RenderableCircle2 (Circle2 a)
                       deriving Show
 
 -- | A list of (renderable item, color, isSelected).

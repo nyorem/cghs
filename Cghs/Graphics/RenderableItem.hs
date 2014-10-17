@@ -8,8 +8,10 @@ import Cghs.Graphics.Types
 
 import Cghs.Types.Circle2
 import Cghs.Types.Line2
+import Cghs.Types.PlaneRegion2
 import Cghs.Types.PointVector2
 import Cghs.Types.Polygon2
+import Cghs.Types.Ray2
 import Cghs.Types.Segment2
 import Cghs.Types.Triangle2
 import Cghs.Utils
@@ -17,9 +19,26 @@ import Cghs.Utils
 -- | Render an item.
 renderItem :: RenderableItem GLfloat -> IO ()
 
+-- Circle
+renderItem (RenderableCircle2 (o, r)) = renderItem (RenderablePolygon2 p)
+    where p = map Point2 [ (x o + realToFrac r * cos (2 * pi * k / nmax),
+                            y o + realToFrac r * sin (2 * pi * k / nmax))
+                          | k <- [0 .. nmax - 1]  ]
+          nmax = 30
+
 -- Line
 renderItem (RenderableLine2 l) = renderItem (RenderableSegment2 s)
     where s = lineToSegment2 l
+
+-- PlaneRegion
+renderItem (RenderablePlaneRegion2 r) = do
+    let b = boundary r
+        segs = zipWith (\p q -> RenderableSegment2 $ (Segment2 p q)) (init b) (tail b)
+        leftLine = RenderableLine2 . rayToLine2 . leftDir $ r
+        rightLine = RenderableLine2 . rayToLine2 . rightDir $ r
+    renderItem leftLine
+    mapM_ renderItem segs
+    renderItem rightLine
 
 -- Point
 renderItem (RenderablePoint2 p) = renderPrimitive Points $ do
@@ -44,13 +63,6 @@ renderItem (RenderableTriangle2 t) = renderPrimitive Triangles $ do
         where p = p1 t
               q = p2 t
               r = p3 t
-
--- Circle
-renderItem (RenderableCircle2 (o, r)) = renderItem (RenderablePolygon2 p)
-    where p = map Point2 [ (x o + realToFrac r * cos (2 * pi * k / nmax),
-                            y o + realToFrac r * sin (2 * pi * k / nmax))
-                          | k <- [0 .. nmax - 1]  ]
-          nmax = 30
 
 -- | Render a list of items.
 renderItemList :: RenderableListItem -> IO ()
@@ -177,4 +189,8 @@ green = Color3 0 255 0
 -- | Blue.
 blue :: Color3 GLfloat
 blue = Color3 0 0 255
+
+-- | Orange.
+orange :: Color3 GLfloat
+orange = Color3 255 140 0
 

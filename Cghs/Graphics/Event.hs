@@ -4,12 +4,14 @@ where
 
 import Control.Lens
 import Control.Monad ( when )
+import Data.Either ( lefts, rights )
 import Data.IORef
 
 import qualified Graphics.UI.GLFW as W
 
 import Cghs.Algorithms.ConvexHull2
 import Cghs.Algorithms.Triangulation2
+import Cghs.Algorithms.VoronoiDiagram2
 
 import Cghs.Graphics.RenderableItem
 import Cghs.Graphics.Types
@@ -54,6 +56,15 @@ keyEventFunctions =
                     newState = viewerState & renderList %~ (++  map (\t -> (RenderableTriangle2 t, green, False)) tris)
                 writeIORef ref newState
             _ -> return ()
+      )
+
+      -- 'v' computes the Voronoi diagram of all the points in the list
+    , (W.Key'V, \ref _ _ -> do
+        modifyIORef ref $ \viewerState ->
+            let diagram = map snd $ voronoiDiagram2 $ getPoints $ viewerState ^. renderList
+                polys = map (\p -> (RenderablePolygon2 p, orange, False)) $ lefts diagram
+                regions = map (\r -> (RenderablePlaneRegion2 r, orange, False)) $ rights diagram
+            in viewerState & renderList %~ (++ (polys ++ regions))
       )
 
       -- 'l' creates a line between two points
