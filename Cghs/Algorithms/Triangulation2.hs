@@ -15,12 +15,12 @@ import Cghs.Types.Triangle2
 
 import Cghs.Utils
 
--- TODO: createAdjacentTriangles not correct
--- it depends on the order of the triangle
+-- TODO: triangulate concave polygon
 
--- | Triangulation of a polygon using the ear method.
+-- | Triangulation of a convex polygon using the ear method.
 triangulatePolygon2 :: (Fractional a, Ord a) => Polygon2 a -> [Triangle2 a]
 triangulatePolygon2 poly
+    | length poly < 3 = []
     | length poly == 3 =
         let [p, q, r] = poly in
         [Triangle2 p q r]
@@ -49,18 +49,20 @@ isEarPolygon2 points p =
 -- | Triangulation of a point set using
 -- the triangle splitting algorithm.
 triangulatePointSet2 :: (RealFloat a) => [Point2 a] -> [Triangle2 a]
-triangulatePointSet2 ps = go triHull interiorPoints
-    where chull = convexHull2 ps
-          triHull = triangulatePolygon2 chull
-          interiorPoints = filter (`notElem` chull) ps
-          findTriangle tri' p = fromJust $ find (\t -> isInsideTriangle2 t p) tri'
-          createAdjacentTriangles t p = [Triangle2 q1 q2 p, Triangle2 q2 q3 p, Triangle2 q1 q3 p]
-              where q1 = p1 t
-                    q2 = p2 t
-                    q3 = p3 t
-          go tri [] = tri
-          go tri (q:qs) =
-              let t = findTriangle tri q
-                  newTriangles = createAdjacentTriangles t q
-              in go (tri ++ newTriangles) qs
+triangulatePointSet2 ps
+    | length ps >= 3 = go triHull interiorPoints
+    | otherwise = []
+        where chull = convexHull2 ps
+              triHull = triangulatePolygon2 chull
+              interiorPoints = filter (`notElem` chull) ps
+              findTriangle tri' p = fromJust $ find (\t -> isInsideTriangle2 t p) tri'
+              createAdjacentTriangles t p = [Triangle2 q1 q2 p, Triangle2 q2 q3 p, Triangle2 q1 p q3]
+                  where q1 = p1 t
+                        q2 = p2 t
+                        q3 = p3 t
+              go tri [] = tri
+              go tri (q:qs) =
+                  let t = findTriangle tri q
+                      newTriangles = delete t tri ++ createAdjacentTriangles t q
+                  in go newTriangles qs
 
