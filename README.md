@@ -39,9 +39,9 @@ The following functionalities are supported by the viewer (AZERTY keyboard):
 
 # TODO
 
-* Voronoi diagram: isInsidePlaneRegion2, findCellContaining, voronoiDiagram2
+* Voronoi diagram: voronoiDiagram2
+* Sweep-line algorithms: conex hull and point set triangulation
 * do a better thing for getRenderable stuff
-* tests
 
 # Useful links
 
