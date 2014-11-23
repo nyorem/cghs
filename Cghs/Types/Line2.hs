@@ -34,8 +34,12 @@ perpendicularLine2 (o, dir) = (o, perpendicularDir)
     where perpendicularDir = Vector2 $ (- (yv dir), xv dir)
 
 -- | Predicate that determines if a point lies on a line.
-onTheLine2 :: (Eq a, Num a) => Point2 a -> Line2 a -> Bool
-onTheLine2 p l = (a * (x p) + b * (y p) + c) == 0
+onTheLine2 :: (Num a, Ord a) => Point2 a -> Line2 a -> Bool
+onTheLine2 p l = sideLine2 p l == EQ
+
+-- | Determines the side of the line a point is.
+sideLine2 :: (Num a, Ord a) => Point2 a -> Line2 a -> Ordering
+sideLine2 p l = (a * (x p) + b * (y p) + c) `compare` 0
     where (a, b, c) = computeEq2 l
 
 -- | Maybe returns the intersection point of two lines.
@@ -62,4 +66,16 @@ xaxis o = (o, Vector2 (1, 0))
 -- | A line parallel to the Y axis.
 yaxis :: (Num a) => Point2 a -> Line2 a
 yaxis o = (o, Vector2 (0, 1))
+
+-- | Orthogonal projection of a point on a line.
+orthogonalProjectionPointLine2 :: (Fractional a) => Point2 a -> Line2 a -> Point2 a
+orthogonalProjectionPointLine2 p (o, dir) = Point2 (xp, yp)
+    where diff = (p .-. o) <.> dir
+          xp = (x o) + (diff * (xv dir)) / squaredNorm dir
+          yp = (y o) + (diff * (yv dir)) / squaredNorm dir
+
+-- | Distance between a line and a point.
+distancePointLine2 :: (Floating a ) => Point2 a -> Line2 a -> a
+distancePointLine2 p l = sqrt $ squaredNorm $ p .-. proj
+    where proj = orthogonalProjectionPointLine2 p l
 

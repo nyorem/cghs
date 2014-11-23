@@ -29,6 +29,7 @@ The following functionalities are supported by the viewer (AZERTY keyboard):
 * 'r' to restore the initial state
 * 'c' to apply the convex hull algorithm on the selected points
 * 't' to triangulate the selected polygon or point set depending on the current mode
+* 'T' to compute the Delaunay triangulation of the selected point set
 * 'v' to compute the Voronoi diagram of a point set
 * 'p' to create a polygon where the vertices are the selected points
 * 'a' to toggle the selected component of the points
@@ -40,7 +41,8 @@ The following functionalities are supported by the viewer (AZERTY keyboard):
 # TODO
 
 * Voronoi diagram: voronoiDiagram2
-* Sweep-line algorithms: conex hull and point set triangulation
+* Delaunay triangulation: delaunayTriangulation2
+* Sweep-line algorithms: convex hull and point set triangulation
 * do a better thing for getRenderable stuff
 
 # Useful links

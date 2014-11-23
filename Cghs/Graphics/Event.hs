@@ -10,6 +10,7 @@ import Data.IORef
 import qualified Graphics.UI.GLFW as W
 
 import Cghs.Algorithms.ConvexHull2
+import Cghs.Algorithms.DelaunayTriangulation2
 import Cghs.Algorithms.Triangulation2
 import Cghs.Algorithms.VoronoiDiagram2
 
@@ -36,18 +37,20 @@ keyEventFunctions =
       -- 'c' computes the convex hull of all the points in the list
     , (W.Key'C, \ref _ _ -> do
         modifyIORef ref $ \viewerState ->
-            let chull = convexHull2 $ getPoints $ viewerState ^. renderList
+            let chull = convexHull2Graham $ getPoints $ viewerState ^. renderList
             in viewerState & renderList %~ ((RenderablePolygon2 chull, blue, False) :)
       )
 
       -- 't' computes the triangulation of all the points in the list
       -- or the triangulation of a polygon
       -- depending on the current mode
-    , (W.Key'T, \ref _ _ -> do
+      -- 'T' computes the Delaunay triangulation of all the points in the list
+    , (W.Key'T, \ref mods _ -> do
         viewerState <- readIORef ref
         case viewerState ^. selectionMode of
             PointMode -> do
-                let tri = triangulatePointSet2 $ getPoints $ viewerState ^. renderList
+                let triFunction = if W.modifierKeysShift mods then delaunayTriangulation2 else triangulatePointSet2
+                let tri = triFunction $ getPoints $ viewerState ^. renderList
                     newState = viewerState & renderList %~ (++  map (\t -> (RenderableTriangle2 t, green, False)) tri)
                 writeIORef ref newState
             PolygonMode -> do
@@ -138,4 +141,3 @@ mouseEventFunctions =
             in viewerState & renderList %~ map (selectItem mode $ Point2 (xMouse, yMouse))
       )
     ]
-

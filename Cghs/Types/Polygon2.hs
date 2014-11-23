@@ -3,9 +3,11 @@ module Cghs.Types.Polygon2
 where
 
 import Data.List ( elemIndex )
-import Data.Maybe ( fromJust )
+import Data.Maybe ( fromJust, isJust )
 
+import Cghs.Types.Line2
 import Cghs.Types.PointVector2
+import Cghs.Types.Segment2
 import Cghs.Types.Triangle2
 
 import Cghs.Utils
@@ -80,4 +82,12 @@ isInsidePolygon2 poly point = foldr step False couples
 reverseOrderPolygon2 :: Polygon2 a -> Polygon2 a
 reverseOrderPolygon2 [] = []
 reverseOrderPolygon2 (p:ps) = p : reverse ps
+
+-- | Computes the intersection of a polygon and a line.
+intersectPolygonLine2 :: (Eq a, Fractional a) => Polygon2 a -> Line2 a -> Maybe [Point2 a]
+intersectPolygonLine2 poly l
+    | null inter = Nothing
+    | otherwise = sequence inter
+    where edges = map (\(p, q) -> segmentToLine2 $ Segment2 p q) $ polygonEdges2 poly
+          inter = filter isJust $ map (intersectLines2 l) edges
 

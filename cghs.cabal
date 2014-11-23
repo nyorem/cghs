@@ -30,6 +30,7 @@ library
                          Cghs.Types.Segment2,
                          Cghs.Types.Triangle2,
                          Cghs.Algorithms.ConvexHull2,
+                         Cghs.Algorithms.DelaunayTriangulation2,
                          Cghs.Algorithms.Triangulation2,
                          Cghs.Algorithms.VoronoiDiagram2,
                          Cghs.Graphics.Event,

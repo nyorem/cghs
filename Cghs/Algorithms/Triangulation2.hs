@@ -1,19 +1,22 @@
 -- | Triangulations in two dimensions.
 module Cghs.Algorithms.Triangulation2 ( triangulatePointSet2
                                       , triangulatePolygon2
+                                      , edgesTriangulation2
+                                      , adjacentTriangles2
                                       )
 where
 
-import Data.List ( delete, find )
+import Data.List ( delete, find, nub )
 import Data.Maybe ( fromJust )
 
 import Cghs.Algorithms.ConvexHull2
 
 import Cghs.Types.PointVector2
 import Cghs.Types.Polygon2
+import Cghs.Types.Segment2
 import Cghs.Types.Triangle2
 
-import Cghs.Utils
+import Cghs.Utils ( deleteList )
 
 -- TODO: triangulate concave polygon
 
@@ -52,7 +55,7 @@ triangulatePointSet2 :: (RealFloat a) => [Point2 a] -> [Triangle2 a]
 triangulatePointSet2 ps
     | length ps >= 3 = go triHull interiorPoints
     | otherwise = []
-        where chull = convexHull2 ps
+        where chull = convexHull2Graham ps
               triHull = triangulatePolygon2 chull
               interiorPoints = filter (`notElem` chull) ps
               findTriangle tri' p = fromJust $ find (\t -> isInsideTriangle2 t p) tri'
@@ -65,4 +68,18 @@ triangulatePointSet2 ps
                   let t = findTriangle tri q
                       newTriangles = delete t tri ++ createAdjacentTriangles t q
                   in go newTriangles qs
+
+-- | Computes all the edges of a given triangulation.
+edgesTriangulation2 :: (Eq a) => [Triangle2 a] -> [Segment2 a]
+edgesTriangulation2 = nub . concatMap triToEdges
+    where triToEdges t = [Segment2 (p1 t) (p2 t),
+                          Segment2 (p1 t) (p3 t),
+                          Segment2 (p2 t) (p3 t)]
+
+-- | Finds the triangles whose side is the given edge.
+adjacentTriangles2 :: (Eq a) => [Triangle2 a] -> Segment2 a -> [Triangle2 a]
+adjacentTriangles2 tri s = filter (\t -> isSide t s) tri
+    where isSide t s' = s' `elem` [ Segment2 (p1 t) (p2 t),
+                                  Segment2 (p1 t) (p3 t),
+                                  Segment2 (p2 t) (p3 t) ]
 
