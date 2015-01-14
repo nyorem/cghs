@@ -7,7 +7,7 @@ import Cghs.Types.PointVector2
 
 -- | A ray is composed of an origin (point) and a direction (vector).
 data Ray2 a = Ray2 { originRay :: Point2 a,
-                     dir :: Vector2 a } deriving Show
+                     dirRay :: Vector2 a } deriving Show
 
 -- | Converts a ray to a line.
 rayToLine2 :: Ray2 a -> Line2 a

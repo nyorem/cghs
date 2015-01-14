@@ -9,10 +9,10 @@ import System.IO ( hPutStrLn, stderr )
 import qualified Graphics.UI.GLFW as W
 import Graphics.Rendering.OpenGL
 
-import Cghs.Graphics.Event
-import Cghs.Graphics.RenderableItem
-import Cghs.Graphics.Types
-import Cghs.Graphics.Utils
+import Graphics.Event
+import Graphics.RenderableItem
+import Graphics.Types
+import Graphics.Utils
 
 errorCallBack :: W.ErrorCallback
 errorCallBack _ desc = hPutStrLn stderr desc

@@ -4,7 +4,7 @@ where
 
 import Cghs.Types.PointVector2
 
--- | A line is represented by a point and a vector.
+-- | A line is cmpoed of a point and a direction vector.
 type Line2 a = (Point2 a, Vector2 a)
 
 -- | A line has the following equation: a*x + b*y + c = 0
@@ -59,11 +59,11 @@ directionLine2 (_, dir)
     | signum (xv dir) == signum (yv dir) = IncreasingLine
     | otherwise = DecreasingLine
 
--- | A line parallel to the X axis.
+-- | A line parallel to the X axis passign through a given point.
 xaxis :: (Num a) => Point2 a -> Line2 a
 xaxis o = (o, Vector2 (1, 0))
 
--- | A line parallel to the Y axis.
+-- | A line parallel to the Y axis passign through a given point.
 yaxis :: (Num a) => Point2 a -> Line2 a
 yaxis o = (o, Vector2 (0, 1))
 
@@ -74,8 +74,8 @@ orthogonalProjectionPointLine2 p (o, dir) = Point2 (xp, yp)
           xp = (x o) + (diff * (xv dir)) / squaredNorm dir
           yp = (y o) + (diff * (yv dir)) / squaredNorm dir
 
--- | Distance between a line and a point.
-distancePointLine2 :: (Floating a ) => Point2 a -> Line2 a -> a
-distancePointLine2 p l = sqrt $ squaredNorm $ p .-. proj
+-- | Distance between a point and a line.
+squaredDistancePointLine2 :: (Fractional a) => Point2 a -> Line2 a -> a
+squaredDistancePointLine2 p l = squaredNorm $ p .-. proj
     where proj = orthogonalProjectionPointLine2 p l
 

@@ -1,10 +1,10 @@
 -- | Functions related to renderable items (used in the viewer).
-module Cghs.Graphics.RenderableItem
+module Graphics.RenderableItem
 where
 
 import Graphics.Rendering.OpenGL
 
-import Cghs.Graphics.Types
+import Graphics.Types
 
 import Cghs.Types.Circle2
 import Cghs.Types.Line2
@@ -128,7 +128,7 @@ isRenderable PolygonMode = isRenderablePolygon
 -- | Gives the intersection predicate corresponding to the current
 -- selection mode.
 isInCircleRenderable :: (Floating a, Ord a) => SelectMode -> (RenderableItem a -> Circle2 a -> Bool)
-isInCircleRenderable PointMode = \r -> isInCircle2 (getRenderablePoint r)
+isInCircleRenderable PointMode = \r -> isInsideCircle2 (getRenderablePoint r)
 isInCircleRenderable SegmentMode = \r -> doesSegmentIntersectCircle2 (getRenderableSegment r)
 isInCircleRenderable LineMode = \r -> doesLineIntersectCircle2 (getRenderableLine r)
 isInCircleRenderable PolygonMode = \r c ->

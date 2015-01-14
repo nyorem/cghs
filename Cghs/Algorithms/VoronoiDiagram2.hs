@@ -52,7 +52,7 @@ findCellContaining p (c@(q, Left poly):cs) =
     if isInsidePolygon2 poly p then c
     else findCellContaining p cs
 findCellContaining p (c@(q, Right reg):cs) =
-    if isInsidePlaneRegion2 reg p then c
+    if isInsidePlaneRegion2 p reg then c
     else findCellContaining p cs
 
 -- | Computes the intersection of a Voronoi cell and a line.

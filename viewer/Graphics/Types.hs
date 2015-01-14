@@ -1,7 +1,7 @@
 {-# LANGUAGE TemplateHaskell #-}
 
 -- | Types used during the rendering.
-module Cghs.Graphics.Types
+module Graphics.Types
 where
 
 import Graphics.Rendering.OpenGL
@@ -29,7 +29,7 @@ data RenderableItem a = RenderableCircle2 (Circle2 a)
 -- | A list of (renderable item, color, isSelected).
 type RenderableListItem = [(RenderableItem GLfloat, Color3 GLfloat, Bool)]
 
--- | Select mode.
+-- | Selection mode.
 data SelectMode = PointMode
                 | SegmentMode
                 | LineMode
@@ -45,8 +45,8 @@ instance Show SelectMode where
 
 -- | State of the viewer.
 data ViewerState = ViewerState
-                 { _renderList :: RenderableListItem,
-                   _selectionMode :: SelectMode
+                 { _renderList :: RenderableListItem
+                 , _selectionMode :: SelectMode
                  }
 makeLenses ''ViewerState
 

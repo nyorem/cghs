@@ -4,10 +4,6 @@ where
 
 import Data.List ( delete )
 
--- | Applies a function to a couple.
-(><) :: (a -> b) -> (a, a) -> (b, b)
-f >< (x, y) = (f x, f y)
-
 -- | First component of a triple.
 fst3 :: (a, b, c) -> a
 fst3 (a, _, _) = a
@@ -24,8 +20,7 @@ pred' s
     | s == minBound = maxBound
     | otherwise = pred s
 
--- | Get the i'th element of a list by considering the
--- list cyclic.
+-- | Get the i'th element of a list by considering the list to be cyclic.
 (<!!>) :: [a] -> Int -> a
 xs <!!> i = xs !! i'
     where i' = i `mod` (length xs)

@@ -1,5 +1,5 @@
 -- | Events handling for the viewer.
-module Cghs.Graphics.Event
+module Graphics.Event
 where
 
 import Control.Lens
@@ -14,9 +14,9 @@ import Cghs.Algorithms.DelaunayTriangulation2
 import Cghs.Algorithms.Triangulation2
 import Cghs.Algorithms.VoronoiDiagram2
 
-import Cghs.Graphics.RenderableItem
-import Cghs.Graphics.Types
-import Cghs.Graphics.Utils
+import Graphics.RenderableItem
+import Graphics.Types
+import Graphics.Utils
 
 import Cghs.Types.Segment2
 import Cghs.Types.PointVector2

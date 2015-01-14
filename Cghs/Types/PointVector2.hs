@@ -2,10 +2,10 @@
 module Cghs.Types.PointVector2
 where
 
+import Data.Bifunctor
 import Data.Monoid
 
 import Cghs.Types.Orientation
-import Cghs.Utils
 
 -- | 2D point data type.
 newtype Point2 a = Point2 { getPoint2 :: (a, a) } deriving (Eq, Show)
@@ -15,25 +15,19 @@ newtype Vector2 a = Vector2 { getVector2 :: (a, a) } deriving (Eq, Show)
 
 -- | Applies a function to a point.
 instance Functor Point2 where
-    fmap f p = Point2 $ f >< (getPoint2 p)
+    fmap f p = Point2 $ bimap f f (getPoint2 p)
 
 -- | The origin point.
 origin :: (Num a) => Point2 a
 origin = Point2 (0, 0)
 
--- | ith coordinate of a point.
-ith :: Int -> Point2 a -> a
-ith 1 = fst . getPoint2
-ith 2 = snd . getPoint2
-ith _ = error "Coordinate index out of bounds"
-
 -- | X-coordinate of a point.
 x :: Point2 a -> a
-x = ith 1
+x = fst . getPoint2
 
 -- | Y-coordinate of a point.
 y :: Point2 a -> a
-y = ith 2
+y = snd . getPoint2
 
 -- | Determines the orientation of three points.
 orientation2 :: (Num a, Ord a) => Point2 a -> Point2 a -> Point2 a -> Orientation
@@ -50,7 +44,7 @@ argP p0 p = arg $ p0 .-. p
 -- | Rotation of a point around the origin.
 rotO :: (Floating a) => a -> Point2 a -> Point2 a
 rotO theta p = Point2 (xrot, yrot)
-    where xrot = (x p) * (cos theta) + (y p) * (sin theta)
+    where xrot = (x p) * (cos theta) - (y p) * (sin theta)
           yrot = (x p) * (sin theta) + (y p) * (cos theta)
 
 -- | Rotation of a point.
@@ -62,7 +56,7 @@ rot theta o p =
 
 -- | Applies a function to a vector.
 instance Functor Vector2 where
-    fmap f p = Vector2 $ f >< (getVector2 p)
+    fmap f p = Vector2 $ bimap f f (getVector2 p)
 
 -- | Vectors define a monoid.
 instance (Num a) => Monoid (Vector2 a) where
@@ -73,19 +67,13 @@ instance (Num a) => Monoid (Vector2 a) where
 originv :: (Num a) => Vector2 a
 originv = Vector2 (0, 0)
 
--- | ith coordinate of a vector.
-ithv :: Int -> Vector2 a -> a
-ithv 1 = fst . getVector2
-ithv 2 = snd . getVector2
-ithv _ = error "Coordinate index out of bounds"
-
 -- | X-coordinate of a vector.
 xv :: Vector2 a -> a
-xv = ithv 1
+xv = fst . getVector2
 
 -- | Y-coordinate of a vector.
 yv :: Vector2 a -> a
-yv = ithv 2
+yv = snd . getVector2
 
 -- | Squared norm of a vector.
 squaredNorm :: (Num a) => Vector2 a -> a
@@ -129,7 +117,7 @@ u <^> v = xv u * yv v - yv u * xv v
 
 -- | Normalizes an unit vector.
 normalize :: (Floating a) => Vector2 a -> Vector2 a
-normalize v = (1 / (sqrt $ squaredNorm v)) *.> v
+normalize v = (recip . sqrt $ squaredNorm v) *.> v
 
 -- | Converts a point to a vector.
 toVector :: (Num a) => Point2 a -> Vector2 a

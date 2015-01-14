@@ -8,16 +8,17 @@ import Cghs.Types.Line2
 import Cghs.Types.PointVector2
 
 -- | The 2D segment data type.
-data Segment2 a = Segment2 {src :: Point2 a,
-                            dst :: Point2 a} deriving (Show, Eq)
+data Segment2 a = Segment2 { src :: Point2 a
+                           , dst :: Point2 a
+                           } deriving (Show, Eq)
 
 -- | Length of a segment.
-lengthSegment2 :: (Floating a) => Segment2 a -> a
-lengthSegment2 s = sqrt . squaredNorm $ (src s) .-. (dst s)
+squaredLengthSegment2 :: (Num a) => Segment2 a -> a
+squaredLengthSegment2 s = squaredNorm $ (src s) .-. (dst s)
 
 -- | Predicate that determines if a point is inside a segment.
-insideSegment2 :: (Num a, Ord a) => Point2 a -> Segment2 a -> Bool
-insideSegment2 p s = (onTheLine2 p (segmentToLine2 s)) &&
+isInsideSegment2 :: (Num a, Ord a) => Point2 a -> Segment2 a -> Bool
+isInsideSegment2 p s = (onTheLine2 p (segmentToLine2 s)) &&
               (((x p) >= (x . src $ s) && (x p) <= (x . dst $ s)) &&
               ((y p) >= (y . src $ s) && (y p) <= (y . dst $ s))) ||
               (((x p) >= (x . dst $ s) && (x p) <= (x . src $ s)) &&

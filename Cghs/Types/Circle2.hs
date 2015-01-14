@@ -9,12 +9,12 @@ import Cghs.Types.PointVector2
 import Cghs.Types.Segment2
 import Cghs.Utils
 
--- | A circle is made with an origin and a radius.
+-- | A circle is composed of an origin and a radius.
 type Circle2 a = (Point2 a, Double)
 
 -- | Is a point inside a circle?
-isInCircle2 :: (Floating a, Ord a) => Point2 a -> Circle2 a -> Bool
-isInCircle2 p (o, r) = squaredNorm (o .-. p) <= realToFrac (r * r)
+isInsideCircle2 :: (Floating a, Ord a) => Point2 a -> Circle2 a -> Bool
+isInsideCircle2 p (o, r) = squaredNorm (o .-. p) <= realToFrac (r * r)
 
 -- | Intersection between a line and a circle.
 intersectLineCircle2 :: (Floating a, Ord a) => Line2 a -> Circle2 a -> Maybe [Point2 a]
@@ -34,7 +34,7 @@ doesSegmentIntersectCircle2 :: (Floating a, Ord a) => Segment2 a -> Circle2 a ->
 doesSegmentIntersectCircle2 s c =
     case sols of
         Nothing -> False
-        Just points -> all (\p -> insideSegment2 p s) points
+        Just points -> all (\p -> isInsideSegment2 p s) points
         where sols = intersectLineCircle2 (segmentToLine2 s) c
 
 -- | Does a line intersects a circle in two points?

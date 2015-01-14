@@ -32,15 +32,9 @@ library
                          Cghs.Algorithms.ConvexHull2,
                          Cghs.Algorithms.DelaunayTriangulation2,
                          Cghs.Algorithms.Triangulation2,
-                         Cghs.Algorithms.VoronoiDiagram2,
-                         Cghs.Graphics.Event,
-                         Cghs.Graphics.Utils,
-                         Cghs.Graphics.Types,
-                         Cghs.Graphics.RenderableItem
-    build-depends:       base >=4.6 && <4.8,
-                         GLFW-b >= 1.4.6,
-                         OpenGL >= 2.9.2.0,
-                         lens >= 4.4
+                         Cghs.Algorithms.VoronoiDiagram2
+    build-depends:       base >= 4.6 && < 4.8,
+                         bifunctors >= 4.2 && < 4.3
     default-language:    Haskell2010
     ghc-options:         -Wall
 
@@ -48,10 +42,10 @@ executable viewer
     hs-source-dirs:      viewer
     main-is:             Main.hs
     default-language:    Haskell2010
-    build-depends:       base >=4.6 && < 4.8,
-                         cghs >= 0.1.0,
-                         GLFW-b >= 1.4.6,
-                         OpenGL >= 2.9.2.0,
-                         lens >= 4.4
+    build-depends:       base >= 4.6 && < 4.8,
+                         cghs >= 0.1.0 && < 0.2,
+                         GLFW-b >= 1.4.6 && < 1.5,
+                         OpenGL >= 2.9.2.0 && < 3.0,
+                         lens >= 4.4 && < 4.5
     ghc-options:         -Wall
 
