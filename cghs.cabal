@@ -46,6 +46,6 @@ executable viewer
                          cghs >= 0.1.0 && < 0.2,
                          GLFW-b >= 1.4.6 && < 1.5,
                          OpenGL >= 2.9.2.0 && < 3.0,
-                         lens >= 4.4 && < 4.5
+                         lens >= 4.7 && < 4.8
     ghc-options:         -Wall
 

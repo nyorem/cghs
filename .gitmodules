@@ -1,0 +1,6 @@
+[submodule "thirdparty/GLFW-b"]
+	path = thirdparty/GLFW-b
+	url = https://github.com/bsl/GLFW-b
+[submodule "thirdparty/bindings-GLFW"]
+	path = thirdparty/bindings-GLFW
+	url = https://github.com/bsl/bindings-GLFW

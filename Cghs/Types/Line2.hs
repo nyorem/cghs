@@ -4,7 +4,7 @@ where
 
 import Cghs.Types.PointVector2
 
--- | A line is cmpoed of a point and a direction vector.
+-- | A line is composed of a point and a direction vector.
 type Line2 a = (Point2 a, Vector2 a)
 
 -- | A line has the following equation: a*x + b*y + c = 0
