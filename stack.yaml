@@ -1,14 +1,7 @@
-flags:
-  bindings-GLFW:
-    macosxusechdir: true
-    macosxusemenubar: true
-    wayland: false
-    mir: false
-    macosxuseretina: true
-    x: true
 packages:
 - '.'
-- thirdparty/GLFW-b/
-- thirdparty/bindings-GLFW/
 extra-deps: []
+extra-deps:
+- bindings-GLFW-3.1.1.4
+- GLFW-b-1.4.7.3
 resolver: lts-2.19
