@@ -38,7 +38,7 @@ voronoiDiagram2 points
         in
             -- TODO
             case reg of
-                Right (PlaneRegion2 l b r) -> cell : diagram'
+                Right (PlaneRegion2 _ _ _) -> cell : diagram'
                 Left poly -> let (f1, rest1) = break (== p1) poly
                                  (f2, rest2) = break (== p2) rest1
                              in [(q, Left f2)] ++ [(p, Left (rest2 ++ f1))] ++ diagram'
@@ -48,10 +48,10 @@ voronoiDiagram2 points
 -- returns the seed of the found cell.
 findCellContaining :: (Fractional a, Ord a) => Point2 a -> [VoronoiCell2 a] -> VoronoiCell2 a
 findCellContaining _ [] = undefined
-findCellContaining p (c@(q, Left poly):cs) =
+findCellContaining p (c@(_, Left poly):cs) =
     if isInsidePolygon2 poly p then c
     else findCellContaining p cs
-findCellContaining p (c@(q, Right reg):cs) =
+findCellContaining p (c@(_, Right reg):cs) =
     if isInsidePlaneRegion2 p reg then c
     else findCellContaining p cs
 

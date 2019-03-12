@@ -3,7 +3,6 @@ module Cghs.Types.PointVector2
 where
 
 import Data.Bifunctor
-import Data.Monoid
 
 import Cghs.Types.Orientation
 
@@ -59,9 +58,11 @@ instance Functor Vector2 where
     fmap f p = Vector2 $ bimap f f (getVector2 p)
 
 -- | Vectors define a monoid.
+instance (Num a) => Semigroup (Vector2 a) where
+    (<>) = (<+>)
+
 instance (Num a) => Monoid (Vector2 a) where
     mempty = originv
-    mappend = (<+>)
 
 -- | The origin vector.
 originv :: (Num a) => Vector2 a

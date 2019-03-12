@@ -42,12 +42,13 @@ convexHull2SweepLine ps =
       firstPoints = if o == LeftTurn then [p, q, r] else [p, r, q]
   -- finally, we construct incrementally the boundary of the convex hull
    in go firstPoints qs
-      where go boundary [] = boundary
+      where go [] _ = []
+            go boundary [] = boundary
             go boundary@(b:bs) (r:rs) =
               let lambda           = findLeftTurn bs b r
                   mu               = findRightTurn bs b r
-                  (f1, r1)          = break (== mu) boundary
-                  (f2, r2) = break (== lambda) r1 in
+                  (f1, r1)         = break (== mu) boundary
+                  (f2, _)          = break (== lambda) r1 in
               traceShow f1 $ go (r: f2 ++ f1) rs
 
 findLeftTurn :: (Num a, Ord a) => [Point2 a] -> Point2 a -> Point2 a -> Point2 a

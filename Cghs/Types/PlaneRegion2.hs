@@ -2,8 +2,6 @@
 module Cghs.Types.PlaneRegion2
 where
 
-import Data.Monoid
-
 import Cghs.Types.Line2
 import Cghs.Types.PointVector2
 import Cghs.Types.Ray2
